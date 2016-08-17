@@ -1,0 +1,195 @@
+postgresql-9.5 (9.5.4-0ubuntu0.16.04) xenial-security; urgency=medium
+
+  * New upstream security/bug fix release (LP: #1614113)
+    - Fix possible mis-evaluation of nested CASE-WHEN expressions
+      A CASE expression appearing within the test value subexpression of
+      another CASE could become confused about whether its own test value was
+      null or not.  Also, inlining of a SQL function implementing the equality
+      operator used by a CASE expression could result in passing the wrong
+      test value to functions called within a CASE expression in the SQL
+      function's body.  If the test values were of different data types, a
+      crash might result; moreover such situations could be abused to allow
+      disclosure of portions of server memory.  (CVE-2016-5423)
+
+    - Fix client programs' handling of special characters in database and role
+      names
+      Numerous places in vacuumdb and other client programs could become
+      confused by database and role names containing double quotes or
+      backslashes.  Tighten up quoting rules to make that safe. Also, ensure
+      that when a conninfo string is used as a database name parameter to
+      these programs, it is correctly treated as such throughout.
+
+      Fix handling of paired double quotes in psql's \connect and \password
+      commands to match the documentation.
+
+      Introduce a new -reuse-previous option in psql's \connect command to
+      allow explicit control of whether to re-use connection parameters from a
+      previous connection.  (Without this, the choice is based on whether the
+      database name looks like a conninfo string, as before.)  This allows
+      secure handling of database names containing special characters in
+      pg_dumpall scripts.
+
+      pg_dumpall now refuses to deal with database and role names containing
+      carriage returns or newlines, as it seems impractical to quote those
+      characters safely on Windows.  In future we may reject such names on the
+      server side, but that step has not been taken yet.
+
+      These are considered security fixes because crafted object names
+      containing special characters could have been used to execute commands
+      with superuser privileges the next time a superuser executes pg_dumpall
+      or other routine maintenance operations.  (CVE-2016-5424)
+
+    - Details about other fixes:
+      https://www.postgresql.org/docs/9.5/static/release-9-5-4.html
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Wed, 17 Aug 2016 16:12:33 +0200
+
+postgresql-9.5 (9.5.3-0ubuntu0.16.04) xenial-proposed; urgency=medium
+
+  * New upstream bug fix release (LP: #1581016)
+    - Details: http://www.postgresql.org/docs/9.5/static/release-9-5-3.html
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Thu, 12 May 2016 14:57:49 +0200
+
+postgresql-9.5 (9.5.2-1) unstable; urgency=medium
+
+  * New upstream version.
+
+    + Disable abbreviated keys for string sorting in non-C locales
+      (Robert Haas)
+
+      PostgreSQL 9.5 introduced logic for speeding up comparisons of string
+      data types by using the standard C library function strxfrm() as a
+      substitute for strcoll().  It now emerges that most versions of glibc
+      (Linux's implementation of the C library) have buggy implementations of
+      strxfrm() that, in some locales, can produce string comparison results
+      that do not match strcoll().  Until this problem can be better
+      characterized, disable the optimization in all non-C locales.  (C locale
+      is safe since it uses neither strcoll() nor strxfrm().)
+
+      Unfortunately, this problem affects not only sorting but also entry
+      ordering in B-tree indexes, which means that B-tree indexes on text,
+      varchar, or char columns may now be corrupt if they sort according to an
+      affected locale and were built or modified under PostgreSQL 9.5.0 or
+      9.5.1. Users should REINDEX indexes that might be affected.
+
+      It is not possible at this time to give an exhaustive list of
+      known-affected locales.  C locale is known safe, and there is no
+      evidence of trouble in English-based locales such as en_US, but some
+      other popular locales such as de_DE are affected in most glibc versions.
+
+    + Maintain row-security status properly in cached plans (Stephen Frost)
+
+      In a session that performs queries as more than one role, the plan cache
+      might incorrectly re-use a plan that was generated for another role ID,
+      thus possibly applying the wrong set of policies when row-level security
+      (RLS) is in use. (CVE-2016-2193)
+
+    + Add must-be-superuser checks to some new contrib/pageinspect functions
+      (Andreas Seltenreich)
+
+      Most functions in the pageinspect extension that inspect bytea values
+      disallow calls by non-superusers, but brin_page_type() and
+      brin_metapage_info() failed to do so.  Passing contrived bytea values to
+      them might crash the server or disclose a few bytes of server memory.
+      Add the missing permissions checks to prevent misuse. (CVE-2016-3065)
+
+  * 02-relax-sslkey-permscheck.patch: Replace with what went upstream in 9.6.
+  * Stop suggesting the use of identd.
+  * Modernize server package description.
+  * Recommend sysstat.
+
+ -- Christoph Berg <myon@debian.org>  Tue, 29 Mar 2016 12:22:08 +0200
+
+postgresql-9.5 (9.5.1-1) unstable; urgency=medium
+
+  * New upstream version.
+    + Fix infinite loops and buffer-overrun problems in regular expressions.
+      Very large character ranges in bracket expressions could cause infinite
+      loops in some cases, and memory overwrites in other cases.
+      (CVE-2016-0773)
+
+  * Fix installation path of contrib examples.
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Wed, 10 Feb 2016 13:04:39 +0100
+
+postgresql-9.5 (9.5.0-3) unstable; urgency=medium
+
+  * Move spinlock flag to common configure flags, the python3 build needs that
+    as well.
+  * Update debian/copyright to please DEP-5.
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Thu, 04 Feb 2016 13:08:13 +0100
+
+postgresql-9.5 (9.5.0-2) unstable; urgency=medium
+
+  * Disable spinlocks on alpha. Performance will be poor, but at least they
+    will have a libpq package.
+  * Add logrotate to test dependencies.
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Wed, 13 Jan 2016 11:12:10 +0100
+
+postgresql-9.5 (9.5.0-1) unstable; urgency=medium
+
+  * First 9.5 release.
+  * src/bin/pg_xlogdump/Makefile: Sort list of objects to make build
+    reproducible.
+
+ -- Christoph Berg <myon@debian.org>  Mon, 04 Jan 2016 23:00:37 +0100
+
+postgresql-9.5 (9.5~rc1-1) experimental; urgency=medium
+
+  * First 9.5 release candidate.
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Thu, 17 Dec 2015 16:10:44 +0100
+
+postgresql-9.5 (9.5~beta2-2) experimental; urgency=medium
+
+  * debian/rules: Work around dh_install -X not working on globs.
+    (See also #350570)
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Mon, 16 Nov 2015 16:53:39 +0100
+
+postgresql-9.5 (9.5~beta2-1) experimental; urgency=medium
+
+  * Second 9.5 beta release.
+  * 64-pg_upgrade-sockdir: Fix off-by-one error in max path length.
+  * libpq5.symbols: PQsslAttributes was renamed to PQsslAttributeNames.
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Tue, 10 Nov 2015 12:50:00 +0100
+
+postgresql-9.5 (9.5~beta1-1) experimental; urgency=medium
+
+  * First 9.5 beta release.
+
+    A dump/restore using pg_dumpall, or use of pg_upgrade, is required for
+    those wishing to migrate data from any previous 9.5 release.
+
+    Version 9.5 contains a number of changes that may affect compatibility
+    with previous releases.  See the release notes for details.
+
+  * debian/rules: Remove broken "generate POT files for translators" code.
+  * debian/rules: Call dh without --parallel, it's not supported upstream.
+  * postgresql postrm: Don't clean {/etc,/var/lib,/var/log}/postgresql on 
+    purge.  (Closes: #793861)
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Tue, 06 Oct 2015 11:12:34 +0200
+
+postgresql-9.5 (9.5~alpha2-1) experimental; urgency=medium
+
+  * New alpha release.
+  * Add docbook-xml to build-depends.
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Tue, 04 Aug 2015 11:17:47 +0200
+
+postgresql-9.5 (9.5~alpha1-1) experimental; urgency=medium
+
+  * First 9.5 alpha release.
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Tue, 30 Jun 2015 17:50:22 +0200
+
+postgresql-9.5 (9.5~~devel-1) UNRELEASED; urgency=low
+
+  * New major upstream version 9.5.
+
+ -- Christoph Berg <myon@debian.org>  Fri, 13 Jun 2014 14:59:18 +0200

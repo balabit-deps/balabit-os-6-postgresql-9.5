@@ -1,3 +1,25 @@
+postgresql-9.5 (9.5.5-0ubuntu0.16.04) xenial-proposed; urgency=medium
+
+  * New upstream bug fix release (LP: #1637236)
+    - Fix WAL-logging of truncation of relation free space maps and visibility
+      maps.
+      It was possible for these files to not be correctly restored during
+      crash recovery, or to be written incorrectly on a standby server. Bogus
+      entries in a free space map could lead to attempts to access pages that
+      have been truncated away from the relation itself, typically producing
+      errors like "could not read block XXX: read only 0 of 8192 bytes".
+      Checksum failures in the visibility map are also possible, if
+      checksumming is enabled.
+
+      Procedures for determining whether there is a problem and repairing it
+      if so are discussed at
+         https://wiki.postgresql.org/wiki/Free_Space_Map_Problems.
+
+    - Details about other changes:
+      http://www.postgresql.org/docs/9.5/static/release-9-5-5.html
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Thu, 27 Oct 2016 18:03:43 +0200
+
 postgresql-9.5 (9.5.4-0ubuntu0.16.04) xenial-security; urgency=medium
 
   * New upstream security/bug fix release (LP: #1614113)

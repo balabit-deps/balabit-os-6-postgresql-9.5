@@ -3,11 +3,11 @@
 .\"    Author: The PostgreSQL Global Development Group
 .\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
 .\"      Date: 2016
-.\"    Manual: PostgreSQL 9.5.4 Documentation
-.\"    Source: PostgreSQL 9.5.4
+.\"    Manual: PostgreSQL 9.5.5 Documentation
+.\"    Source: PostgreSQL 9.5.5
 .\"  Language: English
 .\"
-.TH "SELECT" "7" "2016" "PostgreSQL 9.5.4" "PostgreSQL 9.5.4 Documentation"
+.TH "SELECT" "7" "2016" "PostgreSQL 9.5.5" "PostgreSQL 9.5.5 Documentation"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -458,7 +458,7 @@ number or expression to use for generating random numbers within the sampling me
 \fIargument\fR
 values will select the same sample of the table, if the table has not been changed meanwhile\&. But different seed values will usually produce different samples\&. If
 REPEATABLE
-is not given then a new random sample is selected for each query\&. Note that some add\-on sampling methods do not accept
+is not given then a new random seed is selected for each query\&. Note that some add\-on sampling methods do not accept
 REPEATABLE, and will always produce new samples on each use\&.
 .RE
 .PP

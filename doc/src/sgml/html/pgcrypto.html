@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.4 Documentation"
+TITLE="PostgreSQL 9.5.5 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="Additional Supplied Modules"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2016-08-08T20:44:24"></HEAD
+CONTENT="2016-10-24T20:28:13"></HEAD
 ><BODY
 CLASS="SECT1"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.4 Documentation</A
+>PostgreSQL 9.5.5 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -110,7 +110,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN172929"
+NAME="AEN173796"
 >F.24.1. General Hashing Functions</A
 ></H2
 ><DIV
@@ -118,7 +118,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN172931"
+NAME="AEN173798"
 >F.24.1.1. <CODE
 CLASS="FUNCTION"
 >digest()</CODE
@@ -165,7 +165,7 @@ CLASS="FILENAME"
     OpenSSL, more algorithms are available, as detailed in
     <A
 HREF="pgcrypto.html#PGCRYPTO-WITH-WITHOUT-OPENSSL"
->Table F-18</A
+>Table F-20</A
 >.
    </P
 ><P
@@ -187,7 +187,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN172951"
+NAME="AEN173818"
 >F.24.1.2. <CODE
 CLASS="FUNCTION"
 >hmac()</CODE
@@ -232,7 +232,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN172965"
+NAME="AEN173832"
 >F.24.2. Password Hashing Functions</A
 ></H2
 ><P
@@ -297,7 +297,7 @@ CLASS="FIRSTTERM"
 ><P
 >   <A
 HREF="pgcrypto.html#PGCRYPTO-CRYPT-ALGORITHMS"
->Table F-15</A
+>Table F-17</A
 > lists the algorithms
    supported by the <CODE
 CLASS="FUNCTION"
@@ -311,7 +311,7 @@ NAME="PGCRYPTO-CRYPT-ALGORITHMS"
 ></A
 ><P
 ><B
->Table F-15. Supported Algorithms for <CODE
+>Table F-17. Supported Algorithms for <CODE
 CLASS="FUNCTION"
 >crypt()</CODE
 ></B
@@ -412,7 +412,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN173032"
+NAME="AEN173899"
 >F.24.2.1. <CODE
 CLASS="FUNCTION"
 >crypt()</CODE
@@ -464,7 +464,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN173048"
+NAME="AEN173915"
 >F.24.2.2. <CODE
 CLASS="FUNCTION"
 >gen_salt()</CODE
@@ -523,7 +523,7 @@ CLASS="PARAMETER"
 > depend on the algorithm and
     are shown in <A
 HREF="pgcrypto.html#PGCRYPTO-ICFC-TABLE"
->Table F-16</A
+>Table F-18</A
 >.
    </P
 ><DIV
@@ -533,7 +533,7 @@ NAME="PGCRYPTO-ICFC-TABLE"
 ></A
 ><P
 ><B
->Table F-16. Iteration Counts for <CODE
+>Table F-18. Iteration Counts for <CODE
 CLASS="FUNCTION"
 >crypt()</CODE
 ></B
@@ -600,7 +600,7 @@ CLASS="LITERAL"
 ><P
 >    <A
 HREF="pgcrypto.html#PGCRYPTO-HASH-SPEED-TABLE"
->Table F-17</A
+>Table F-19</A
 > gives an overview of the relative slowness
     of different hashing algorithms.
     The table shows how much time it would take to try all
@@ -627,7 +627,7 @@ NAME="PGCRYPTO-HASH-SPEED-TABLE"
 ></A
 ><P
 ><B
->Table F-17. Hash Algorithm Speeds</B
+>Table F-19. Hash Algorithm Speeds</B
 ></P
 ><TABLE
 BORDER="1"
@@ -867,7 +867,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN173193"
+NAME="AEN174060"
 >F.24.3. PGP Encryption Functions</A
 ></H2
 ><P
@@ -981,7 +981,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN173228"
+NAME="AEN174095"
 >F.24.3.1. <CODE
 CLASS="FUNCTION"
 >pgp_sym_encrypt()</CODE
@@ -1011,7 +1011,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN173240"
+NAME="AEN174107"
 >F.24.3.2. <CODE
 CLASS="FUNCTION"
 >pgp_sym_decrypt()</CODE
@@ -1051,7 +1051,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN173255"
+NAME="AEN174122"
 >F.24.3.3. <CODE
 CLASS="FUNCTION"
 >pgp_pub_encrypt()</CODE
@@ -1084,7 +1084,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN173268"
+NAME="AEN174135"
 >F.24.3.4. <CODE
 CLASS="FUNCTION"
 >pgp_pub_decrypt()</CODE
@@ -1134,7 +1134,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN173285"
+NAME="AEN174152"
 >F.24.3.5. <CODE
 CLASS="FUNCTION"
 >pgp_key_id()</CODE
@@ -1200,7 +1200,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN173306"
+NAME="AEN174173"
 >F.24.3.6. <CODE
 CLASS="FUNCTION"
 >armor()</CODE
@@ -1239,7 +1239,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN173320"
+NAME="AEN174187"
 >F.24.3.7. <CODE
 CLASS="FUNCTION"
 >pgp_armor_headers</CODE
@@ -1266,7 +1266,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN173329"
+NAME="AEN174196"
 >F.24.3.8. Options for PGP Functions</A
 ></H3
 ><P
@@ -1302,7 +1302,7 @@ CLASS="SECT4"
 ><H4
 CLASS="SECT4"
 ><A
-NAME="AEN173338"
+NAME="AEN174205"
 >F.24.3.8.1. cipher-algo</A
 ></H4
 ><P
@@ -1325,7 +1325,7 @@ CLASS="SECT4"
 ><H4
 CLASS="SECT4"
 ><A
-NAME="AEN173344"
+NAME="AEN174211"
 >F.24.3.8.2. compress-algo</A
 ></H4
 ><P
@@ -1349,7 +1349,7 @@ CLASS="SECT4"
 ><H4
 CLASS="SECT4"
 ><A
-NAME="AEN173349"
+NAME="AEN174216"
 >F.24.3.8.3. compress-level</A
 ></H4
 ><P
@@ -1367,7 +1367,7 @@ CLASS="SECT4"
 ><H4
 CLASS="SECT4"
 ><A
-NAME="AEN173353"
+NAME="AEN174220"
 >F.24.3.8.4. convert-crlf</A
 ></H4
 ><P
@@ -1403,7 +1403,7 @@ CLASS="SECT4"
 ><H4
 CLASS="SECT4"
 ><A
-NAME="AEN173362"
+NAME="AEN174229"
 >F.24.3.8.5. disable-mdc</A
 ></H4
 ><P
@@ -1423,7 +1423,7 @@ CLASS="SECT4"
 ><H4
 CLASS="SECT4"
 ><A
-NAME="AEN173366"
+NAME="AEN174233"
 >F.24.3.8.6. sess-key</A
 ></H4
 ><P
@@ -1442,7 +1442,7 @@ CLASS="SECT4"
 ><H4
 CLASS="SECT4"
 ><A
-NAME="AEN173370"
+NAME="AEN174237"
 >F.24.3.8.7. s2k-mode</A
 ></H4
 ><P
@@ -1462,7 +1462,7 @@ CLASS="SECT4"
 ><H4
 CLASS="SECT4"
 ><A
-NAME="AEN173374"
+NAME="AEN174241"
 >F.24.3.8.8. s2k-digest-algo</A
 ></H4
 ><P
@@ -1479,7 +1479,7 @@ CLASS="SECT4"
 ><H4
 CLASS="SECT4"
 ><A
-NAME="AEN173378"
+NAME="AEN174245"
 >F.24.3.8.9. s2k-cipher-algo</A
 ></H4
 ><P
@@ -1496,7 +1496,7 @@ CLASS="SECT4"
 ><H4
 CLASS="SECT4"
 ><A
-NAME="AEN173382"
+NAME="AEN174249"
 >F.24.3.8.10. unicode-mode</A
 ></H4
 ><P
@@ -1517,7 +1517,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN173386"
+NAME="AEN174253"
 >F.24.3.9. Generating PGP Keys with GnuPG</A
 ></H3
 ><P
@@ -1596,7 +1596,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN173407"
+NAME="AEN174274"
 >F.24.3.10. Limitations of PGP Code</A
 ></H3
 ><P
@@ -1633,7 +1633,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN173417"
+NAME="AEN174284"
 >F.24.4. Raw Encryption Functions</A
 ></H2
 ><P
@@ -1832,7 +1832,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN173480"
+NAME="AEN174347"
 >F.24.5. Random-Data Functions</A
 ></H2
 ><PRE
@@ -1858,7 +1858,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN173491"
+NAME="AEN174358"
 >F.24.6. Notes</A
 ></H2
 ><DIV
@@ -1866,7 +1866,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN173493"
+NAME="AEN174360"
 >F.24.6.1. Configuration</A
 ></H3
 ><P
@@ -1903,7 +1903,7 @@ NAME="PGCRYPTO-WITH-WITHOUT-OPENSSL"
 ></A
 ><P
 ><B
->Table F-18. Summary of Functionality with and without OpenSSL</B
+>Table F-20. Summary of Functionality with and without OpenSSL</B
 ></P
 ><TABLE
 BORDER="1"
@@ -2041,7 +2041,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN173561"
+NAME="AEN174428"
 >F.24.6.2. NULL Handling</A
 ></H3
 ><P
@@ -2054,7 +2054,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN173564"
+NAME="AEN174431"
 >F.24.6.3. Security Limitations</A
 ></H3
 ><P
@@ -2105,7 +2105,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN173578"
+NAME="AEN174445"
 >F.24.6.4. Useful Reading</A
 ></H3
 ><P
@@ -2170,7 +2170,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN173601"
+NAME="AEN174468"
 >F.24.6.5. Technical References</A
 ></H3
 ><P
@@ -2259,7 +2259,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN173633"
+NAME="AEN174500"
 >F.24.7. Author</A
 ></H2
 ><P
@@ -2282,7 +2282,7 @@ CLASS="INFORMALTABLE"
 ><P
 ></P
 ><A
-NAME="AEN173639"
+NAME="AEN174506"
 ></A
 ><TABLE
 BORDER="1"

@@ -1,0 +1,43 @@
+Index: postgresql-9.5/src/bin/pg_ctl/pg_ctl.c
+===================================================================
+--- postgresql-9.5.orig/src/bin/pg_ctl/pg_ctl.c
++++ postgresql-9.5/src/bin/pg_ctl/pg_ctl.c
+@@ -97,7 +97,6 @@ static char *register_username = NULL;
+ static char *register_password = NULL;
+ static char *argv0 = NULL;
+ static bool allow_core_files = false;
+-static time_t start_time;
+ 
+ static char postopts_file[MAXPGPATH];
+ static char version_file[MAXPGPATH];
+@@ -590,19 +589,15 @@ test_postmaster_connection(pgpid_t pm_pi
+ 				{
+ 					/* File is complete enough for us, parse it */
+ 					pgpid_t		pmpid;
+-					time_t		pmstart;
+ 
+ 					/*
+-					 * Make sanity checks.  If it's for the wrong PID, or the
+-					 * recorded start time is before pg_ctl started, then
++					 * Make sanity checks.  If it's for the wrong PID, then
+ 					 * either we are looking at the wrong data directory, or
+ 					 * this is a pre-existing pidfile that hasn't (yet?) been
+-					 * overwritten by our child postmaster.  Allow 2 seconds
+-					 * slop for possible cross-process clock skew.
++					 * overwritten by our child postmaster.
+ 					 */
+ 					pmpid = atol(optlines[LOCK_FILE_LINE_PID - 1]);
+-					pmstart = atol(optlines[LOCK_FILE_LINE_START_TIME - 1]);
+-					if (pmstart >= start_time - 2 &&
++					if (
+ #ifndef WIN32
+ 						pmpid == pm_pid
+ #else
+@@ -2325,7 +2320,6 @@ main(int argc, char **argv)
+ 
+ 	progname = get_progname(argv[0]);
+ 	set_pglocale_pgservice(argv[0], PG_TEXTDOMAIN("pg_ctl"));
+-	start_time = time(NULL);
+ 
+ 	/*
+ 	 * save argv[0] so do_start() can look for the postmaster if necessary. we

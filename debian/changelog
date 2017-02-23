@@ -1,3 +1,9 @@
+postgresql-9.5 (9.5.5-0ubuntu0.16.04bb1) xenial-proposed; urgency=medium
+
+  * Fix pg_ctl race condition with ntpd (SCB-12248)
+
+ -- KOVACS Krisztian <hidden@balabit.com>  Thu, 23 Feb 2017 09:27:56 +0100
+
 postgresql-9.5 (9.5.5-0ubuntu0.16.04) xenial-proposed; urgency=medium
 
   * New upstream bug fix release (LP: #1637236)

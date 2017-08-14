@@ -120,6 +120,8 @@ InitPlanCache(void)
 	CacheRegisterSyscacheCallback(NAMESPACEOID, PlanCacheSysCallback, (Datum) 0);
 	CacheRegisterSyscacheCallback(OPEROID, PlanCacheSysCallback, (Datum) 0);
 	CacheRegisterSyscacheCallback(AMOPOPID, PlanCacheSysCallback, (Datum) 0);
+	CacheRegisterSyscacheCallback(FOREIGNSERVEROID, PlanCacheSysCallback, (Datum) 0);
+	CacheRegisterSyscacheCallback(FOREIGNDATAWRAPPEROID, PlanCacheSysCallback, (Datum) 0);
 }
 
 /*
@@ -1125,7 +1127,7 @@ CachedPlan *
 GetCachedPlan(CachedPlanSource *plansource, ParamListInfo boundParams,
 			  bool useResOwner)
 {
-	CachedPlan *plan;
+	CachedPlan *plan = NULL;
 	List	   *qlist;
 	bool		customplan;
 
@@ -1206,6 +1208,8 @@ GetCachedPlan(CachedPlanSource *plansource, ParamListInfo boundParams,
 			plansource->num_custom_plans++;
 		}
 	}
+
+	Assert(plan != NULL);
 
 	/* Flag the plan as in use by caller */
 	if (useResOwner)

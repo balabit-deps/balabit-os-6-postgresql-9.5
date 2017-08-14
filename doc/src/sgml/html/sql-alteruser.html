@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.5 Documentation"
+TITLE="PostgreSQL 9.5.8 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="SQL Commands"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2016-10-24T20:28:13"></HEAD
+CONTENT="2017-08-07T21:31:58"></HEAD
 ><BODY
 CLASS="REFENTRY"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.5 Documentation</A
+>PostgreSQL 9.5.8 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -95,7 +95,7 @@ NAME="SQL-ALTERUSER"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN73261"
+NAME="AEN73466"
 ></A
 ><H2
 >Name</H2
@@ -103,7 +103,7 @@ NAME="AEN73261"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN73264"
+NAME="AEN73469"
 ></A
 ><H2
 >Synopsis</H2
@@ -173,12 +173,17 @@ CLASS="REPLACEABLE"
 ></TT
 >
 
-ALTER USER <TT
+ALTER USER { <TT
 CLASS="REPLACEABLE"
 ><I
 >role_specification</I
 ></TT
-> SET <TT
+> | ALL } [ IN DATABASE <TT
+CLASS="REPLACEABLE"
+><I
+>database_name</I
+></TT
+> ] SET <TT
 CLASS="REPLACEABLE"
 ><I
 >configuration_parameter</I
@@ -189,34 +194,49 @@ CLASS="REPLACEABLE"
 >value</I
 ></TT
 > | DEFAULT }
-ALTER USER <TT
+ALTER USER { <TT
 CLASS="REPLACEABLE"
 ><I
 >role_specification</I
 ></TT
-> SET <TT
+> | ALL } [ IN DATABASE <TT
+CLASS="REPLACEABLE"
+><I
+>database_name</I
+></TT
+> ] SET <TT
 CLASS="REPLACEABLE"
 ><I
 >configuration_parameter</I
 ></TT
 > FROM CURRENT
-ALTER USER <TT
+ALTER USER { <TT
 CLASS="REPLACEABLE"
 ><I
 >role_specification</I
 ></TT
-> RESET <TT
+> | ALL } [ IN DATABASE <TT
+CLASS="REPLACEABLE"
+><I
+>database_name</I
+></TT
+> ] RESET <TT
 CLASS="REPLACEABLE"
 ><I
 >configuration_parameter</I
 ></TT
 >
-ALTER USER <TT
+ALTER USER { <TT
 CLASS="REPLACEABLE"
 ><I
 >role_specification</I
 ></TT
-> RESET ALL
+> | ALL } [ IN DATABASE <TT
+CLASS="REPLACEABLE"
+><I
+>database_name</I
+></TT
+> ] RESET ALL
 
 <SPAN
 CLASS="phrase"
@@ -243,7 +263,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN73286"
+NAME="AEN73495"
 ></A
 ><H2
 >Description</H2
@@ -261,7 +281,7 @@ HREF="sql-alterrole.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN73291"
+NAME="AEN73500"
 ></A
 ><H2
 >Compatibility</H2
@@ -280,7 +300,7 @@ CLASS="PRODUCTNAME"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN73296"
+NAME="AEN73505"
 ></A
 ><H2
 >See Also</H2

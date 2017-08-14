@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.5 Documentation"
+TITLE="PostgreSQL 9.5.8 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="Additional Supplied Modules"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2016-10-24T20:28:13"></HEAD
+CONTENT="2017-08-07T21:31:58"></HEAD
 ><BODY
 CLASS="SECT1"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.5 Documentation</A
+>PostgreSQL 9.5.8 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -107,7 +107,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN175029"
+NAME="AEN177579"
 >F.29.1. Functions</A
 ></H2
 ><P
@@ -307,6 +307,33 @@ CLASS="TYPE"
 ></TBODY
 ></TABLE
 ></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>        The <TT
+CLASS="LITERAL"
+>table_len</TT
+> will always be greater than the sum
+        of the <TT
+CLASS="LITERAL"
+>tuple_len</TT
+>, <TT
+CLASS="LITERAL"
+>dead_tuple_len</TT
+>
+        and <TT
+CLASS="LITERAL"
+>free_space</TT
+>. The difference is accounted for by
+        fixed page overhead, the per-page table of pointers to tuples, and
+        padding to ensure that tuples are correctly aligned. 
+      </P
+></BLOCKQUOTE
+></DIV
 ><P
 >     <CODE
 CLASS="FUNCTION"
@@ -381,7 +408,7 @@ CLASS="INFORMALTABLE"
 ><P
 ></P
 ><A
-NAME="AEN175129"
+NAME="AEN177685"
 ></A
 ><TABLE
 BORDER="1"
@@ -613,7 +640,7 @@ CLASS="INFORMALTABLE"
 ><P
 ></P
 ><A
-NAME="AEN175219"
+NAME="AEN177775"
 ></A
 ><TABLE
 BORDER="1"
@@ -962,7 +989,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN175347"
+NAME="AEN177903"
 >F.29.2. Authors</A
 ></H2
 ><P

@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.5 Documentation"
+TITLE="PostgreSQL 9.5.8 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="Logical Decoding"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2016-10-24T20:28:13"></HEAD
+CONTENT="2017-08-07T21:31:58"></HEAD
 ><BODY
 CLASS="SECT1"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.5 Documentation</A
+>PostgreSQL 9.5.8 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -139,7 +139,7 @@ CLASS="PROGRAMLISTING"
     LogicalDecodeShutdownCB shutdown_cb;
 } OutputPluginCallbacks;
 
-typedef void (*LogicalOutputPluginInit)(struct OutputPluginCallbacks *cb);</PRE
+typedef void (*LogicalOutputPluginInit) (struct OutputPluginCallbacks *cb);</PRE
 ><P>
      The <CODE
 CLASS="FUNCTION"
@@ -219,7 +219,7 @@ CLASS="TYPE"
      server's encoding, it can declare that by
      setting <TT
 CLASS="LITERAL"
->OutputPluginOptions.output_mode</TT
+>OutputPluginOptions.output_type</TT
 >
      to <TT
 CLASS="LITERAL"
@@ -313,11 +313,9 @@ CLASS="FUNCTION"
       of the number of changes that are ready to be put out.
 </P><PRE
 CLASS="PROGRAMLISTING"
->typedef void (*LogicalDecodeStartupCB) (
-    struct LogicalDecodingContext *ctx,
-    OutputPluginOptions *options,
-    bool is_init
-);</PRE
+>typedef void (*LogicalDecodeStartupCB) (struct LogicalDecodingContext *ctx,
+                                        OutputPluginOptions *options,
+                                        bool is_init);</PRE
 ><P>
       The <TT
 CLASS="LITERAL"
@@ -384,9 +382,7 @@ CLASS="FUNCTION"
       isn't necessarily being dropped, streaming is just being stopped.
 </P><PRE
 CLASS="PROGRAMLISTING"
->typedef void (*LogicalDecodeShutdownCB) (
-    struct LogicalDecodingContext *ctx
-);</PRE
+>typedef void (*LogicalDecodeShutdownCB) (struct LogicalDecodingContext *ctx);</PRE
 ><P>
      </P
 ></DIV
@@ -407,10 +403,8 @@ CLASS="FUNCTION"
       and their contents never get decoded.
 </P><PRE
 CLASS="PROGRAMLISTING"
->typedef void (*LogicalDecodeBeginCB) (
-    struct LogicalDecodingContext *,
-    ReorderBufferTXN *txn
-);</PRE
+>typedef void (*LogicalDecodeBeginCB) (struct LogicalDecodingContext *ctx,
+                                      ReorderBufferTXN *txn);</PRE
 ><P>
       The <TT
 CLASS="PARAMETER"
@@ -442,10 +436,9 @@ CLASS="FUNCTION"
       rows.
 </P><PRE
 CLASS="PROGRAMLISTING"
->typedef void (*LogicalDecodeCommitCB) (
-    struct LogicalDecodingContext *,
-    ReorderBufferTXN *txn
-);</PRE
+>typedef void (*LogicalDecodeCommitCB) (struct LogicalDecodingContext *ctx,
+                                       ReorderBufferTXN *txn,
+                                       XLogRecPtr commit_lsn);</PRE
 ><P>
      </P
 ></DIV
@@ -478,12 +471,10 @@ CLASS="COMMAND"
       row.
 </P><PRE
 CLASS="PROGRAMLISTING"
->typedef void (*LogicalDecodeChangeCB) (
-    struct LogicalDecodingContext *ctx,
-    ReorderBufferTXN *txn,
-    Relation relation,
-    ReorderBufferChange *change
-);</PRE
+>typedef void (*LogicalDecodeChangeCB) (struct LogicalDecodingContext *ctx,
+                                       ReorderBufferTXN *txn,
+                                       Relation relation,
+                                       ReorderBufferChange *change);</PRE
 ><P>
       The <TT
 CLASS="PARAMETER"
@@ -568,10 +559,8 @@ CLASS="PARAMETER"
        output plugin.
 </P><PRE
 CLASS="PROGRAMLISTING"
->typedef bool (*LogicalDecodeFilterByOriginCB) (
-    struct LogicalDecodingContext *ctx,
-    RepNodeId origin_id
-);</PRE
+>typedef bool (*LogicalDecodeFilterByOriginCB) (struct LogicalDecodingContext *ctx,
+                                               RepOriginId origin_id);</PRE
 ><P>
       The <TT
 CLASS="PARAMETER"

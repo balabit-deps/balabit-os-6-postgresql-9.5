@@ -1321,11 +1321,12 @@
        </entry>
        <entry><type>text</type></entry>
        <entry>
-        Remove the longest string containing only the
+        Remove the longest string containing only characters from
         <parameter>characters</parameter> (a space by default) from the
-        start/end/both ends of the <parameter>string</parameter>
+        start, end, or both ends (<literal>both</> is the default)
+        of <parameter>string</parameter>
        </entry>
-       <entry><literal>trim(both 'x' from 'xTomxx')</literal></entry>
+       <entry><literal>trim(both 'xyz' from 'yxTomxx')</literal></entry>
        <entry><literal>Tom</literal></entry>
       </row>
 
@@ -1334,14 +1335,14 @@
         <literal><function>trim(<optional>leading | trailing
         | both</optional> <optional>from</optional>
         <parameter>string</parameter>
-        <optional><parameter>, characters</parameter></optional>
+        <optional>, <parameter>characters</parameter></optional>
         )</function></literal>
        </entry>
        <entry><type>text</type></entry>
        <entry>
-        Non-standard version of <function>trim()</>
+        Non-standard syntax for <function>trim()</>
        </entry>
-       <entry><literal>trim(both from 'xTomxx', 'x')</literal></entry>
+       <entry><literal>trim(both from 'yxTomxx', 'xyz')</literal></entry>
        <entry><literal>Tom</literal></entry>
       </row>
 
@@ -1413,7 +1414,7 @@
         in <parameter>characters</parameter> (a space by default)
         from the start and end of <parameter>string</parameter>
        </entry>
-       <entry><literal>btrim('xyxtrimyyx', 'xy')</literal></entry>
+       <entry><literal>btrim('xyxtrimyyx', 'xyz')</literal></entry>
        <entry><literal>trim</literal></entry>
       </row>
 
@@ -1682,8 +1683,8 @@
         <parameter>characters</parameter> (a space by default) from the start of
         <parameter>string</parameter>
        </entry>
-       <entry><literal>ltrim('zzzytrim', 'xyz')</literal></entry>
-       <entry><literal>trim</literal></entry>
+       <entry><literal>ltrim('zzzytest', 'xyz')</literal></entry>
+       <entry><literal>test</literal></entry>
       </row>
 
       <row>
@@ -1965,8 +1966,8 @@
         <parameter>characters</parameter> (a space by default) from the end of
         <parameter>string</parameter>
        </entry>
-       <entry><literal>rtrim('trimxxxx', 'x')</literal></entry>
-       <entry><literal>trim</literal></entry>
+       <entry><literal>rtrim('testxxzx', 'xyz')</literal></entry>
+       <entry><literal>test</literal></entry>
       </row>
 
       <row>
@@ -3231,11 +3232,11 @@ SELECT format('Testing %3$s, %2$s, %s', 'one', 'two', 'three');
        </entry>
        <entry><type>bytea</type></entry>
        <entry>
-        Remove the longest string containing only the bytes in
+        Remove the longest string containing only bytes appearing in
         <parameter>bytes</parameter> from the start
         and end of <parameter>string</parameter>
        </entry>
-       <entry><literal>trim(E'\\000'::bytea from E'\\000Tom\\000'::bytea)</literal></entry>
+       <entry><literal>trim(E'\\000\\001'::bytea from E'\\000Tom\\001'::bytea)</literal></entry>
        <entry><literal>Tom</literal></entry>
       </row>
      </tbody>
@@ -3274,11 +3275,11 @@ SELECT format('Testing %3$s, %2$s, %s', 'one', 'two', 'three');
        </entry>
        <entry><type>bytea</type></entry>
        <entry>
-        Remove the longest string consisting only of bytes
-        in <parameter>bytes</parameter> from the start and end of
+        Remove the longest string containing only bytes appearing in
+        <parameter>bytes</parameter> from the start and end of
         <parameter>string</parameter>
       </entry>
-      <entry><literal>btrim(E'\\000trim\\000'::bytea, E'\\000'::bytea)</literal></entry>
+      <entry><literal>btrim(E'\\000trim\\001'::bytea, E'\\000\\001'::bytea)</literal></entry>
       <entry><literal>trim</literal></entry>
      </row>
 
@@ -5745,15 +5746,18 @@ SELECT regexp_matches('abc01234xyz', '(?:(.*?)(\d+)(.*)){1,1}');
        </row>
        <row>
         <entry><literal>TZ</literal></entry>
-        <entry>upper case time-zone name</entry>
+        <entry>upper case time-zone abbreviation
+         (only supported in <function>to_char</>)</entry>
        </row>
        <row>
         <entry><literal>tz</literal></entry>
-        <entry>lower case time-zone name</entry>
+        <entry>lower case time-zone abbreviation
+         (only supported in <function>to_char</>)</entry>
        </row>
        <row>
         <entry><literal>OF</literal></entry>
-        <entry>time-zone offset</entry>
+        <entry>time-zone offset from UTC
+         (only supported in <function>to_char</>)</entry>
        </row>
       </tbody>
      </tgroup>
@@ -5987,7 +5991,7 @@ SELECT regexp_matches('abc01234xyz', '(?:(.*?)(\d+)(.*)){1,1}');
       <para>
        Here is a more
        complex example:
-       <literal>to_timestamp('15:12:02.020.001230', 'HH:MI:SS.MS.US')</literal>
+       <literal>to_timestamp('15:12:02.020.001230', 'HH24:MI:SS.MS.US')</literal>
        is 15 hours, 12 minutes, and 2 seconds + 20 milliseconds +
        1230 microseconds = 2.021230 seconds.
       </para>
@@ -13211,9 +13215,6 @@ SELECT xmlagg(x) FROM (SELECT x FROM test ORDER BY y DESC) AS tab;
         <primary>percentile</primary>
         <secondary>continuous</secondary>
        </indexterm>
-       <indexterm>
-        <primary>median</primary>
-       </indexterm>
        <function>percentile_cont(<replaceable class="parameter">fraction</replaceable>) WITHIN GROUP (ORDER BY <replaceable class="parameter">sort_expression</replaceable>)</function>
       </entry>
       <entry>
@@ -14809,6 +14810,12 @@ SELECT * FROM pg_ls_dir('.') WITH ORDINALITY AS t(ls,n);
       </row>
 
       <row>
+       <entry><literal><function>current_role</function></literal></entry>
+       <entry><type>name</type></entry>
+       <entry>equivalent to <function>current_user</function></entry>
+      </row>
+
+      <row>
        <entry><literal><function>current_schema</function>[()]</literal></entry>
        <entry><type>name</type></entry>
        <entry>name of current schema</entry>
@@ -14919,8 +14926,11 @@ SELECT * FROM pg_ls_dir('.') WITH ORDINALITY AS t(ls,n);
 
    <note>
     <para>
-     <function>current_catalog</function>, <function>current_schema</function>,
-     <function>current_user</function>, <function>session_user</function>,
+     <function>current_catalog</function>,
+     <function>current_role</function>,
+     <function>current_schema</function>,
+     <function>current_user</function>,
+     <function>session_user</function>,
      and <function>user</function> have special syntactic status
      in <acronym>SQL</acronym>: they must be called without trailing
      parentheses.  (In PostgreSQL, parentheses can optionally be used with
@@ -14938,6 +14948,10 @@ SELECT * FROM pg_ls_dir('.') WITH ORDINALITY AS t(ls,n);
 
    <indexterm>
     <primary>current_query</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>current_role</primary>
    </indexterm>
 
    <indexterm>
@@ -14991,6 +15005,11 @@ SELECT * FROM pg_ls_dir('.') WITH ORDINALITY AS t(ls,n);
     functions with the attribute <literal>SECURITY DEFINER</literal>.
     In Unix parlance, the session user is the <quote>real user</quote> and
     the current user is the <quote>effective user</quote>.
+    <function>current_role</function> and <function>user</function> are
+    synonyms for <function>current_user</function>.  (The SQL standard draws
+    a distinction between <function>current_role</function>
+    and <function>current_user</function>, but <productname>PostgreSQL</>
+    does not, since it unifies users and roles into a single kind of entity.)
    </para>
 
    <para>

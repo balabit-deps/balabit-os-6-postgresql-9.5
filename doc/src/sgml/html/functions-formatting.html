@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.5 Documentation"
+TITLE="PostgreSQL 9.5.8 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="Functions and Operators"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2016-10-24T20:28:13"></HEAD
+CONTENT="2017-08-07T21:31:58"></HEAD
 ><BODY
 CLASS="SECT1"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.5 Documentation</A
+>PostgreSQL 9.5.8 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -948,7 +948,11 @@ CLASS="LITERAL"
 >TZ</TT
 ></TD
 ><TD
->upper case time-zone name</TD
+>upper case time-zone abbreviation
+         (only supported in <CODE
+CLASS="FUNCTION"
+>to_char</CODE
+>)</TD
 ></TR
 ><TR
 ><TD
@@ -957,7 +961,11 @@ CLASS="LITERAL"
 >tz</TT
 ></TD
 ><TD
->lower case time-zone name</TD
+>lower case time-zone abbreviation
+         (only supported in <CODE
+CLASS="FUNCTION"
+>to_char</CODE
+>)</TD
 ></TR
 ><TR
 ><TD
@@ -966,7 +974,11 @@ CLASS="LITERAL"
 >OF</TT
 ></TD
 ><TD
->time-zone offset</TD
+>time-zone offset from UTC
+         (only supported in <CODE
+CLASS="FUNCTION"
+>to_char</CODE
+>)</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1510,7 +1522,7 @@ CLASS="LITERAL"
        complex example:
        <TT
 CLASS="LITERAL"
->to_timestamp('15:12:02.020.001230', 'HH:MI:SS.MS.US')</TT
+>to_timestamp('15:12:02.020.001230', 'HH24:MI:SS.MS.US')</TT
 >
        is 15 hours, 12 minutes, and 2 seconds + 20 milliseconds +
        1230 microseconds = 2.021230 seconds.

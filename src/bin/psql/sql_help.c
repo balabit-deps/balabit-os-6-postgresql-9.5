@@ -603,8 +603,7 @@ sql_help_ALTER_MATERIALIZED_VIEW(PQExpBuffer buf)
 					  "    SET WITHOUT CLUSTER\n"
 					  "    SET ( %s = %s [, ... ] )\n"
 					  "    RESET ( %s [, ... ] )\n"
-					  "    OWNER TO { %s | CURRENT_USER | SESSION_USER }\n"
-					  "    SET TABLESPACE %s",
+					  "    OWNER TO { %s | CURRENT_USER | SESSION_USER }",
 					  _("name"),
 					  _("action"),
 					  _("name"),
@@ -630,8 +629,7 @@ sql_help_ALTER_MATERIALIZED_VIEW(PQExpBuffer buf)
 					  _("storage_parameter"),
 					  _("value"),
 					  _("storage_parameter"),
-					  _("new_owner"),
-					  _("new_tablespace"));
+					  _("new_owner"));
 }
 
 void
@@ -1198,10 +1196,10 @@ sql_help_ALTER_USER(PQExpBuffer buf)
 					  "\n"
 					  "ALTER USER %s RENAME TO %s\n"
 					  "\n"
-					  "ALTER USER %s SET %s { TO | = } { %s | DEFAULT }\n"
-					  "ALTER USER %s SET %s FROM CURRENT\n"
-					  "ALTER USER %s RESET %s\n"
-					  "ALTER USER %s RESET ALL\n"
+					  "ALTER USER { %s | ALL } [ IN DATABASE %s ] SET %s { TO | = } { %s | DEFAULT }\n"
+					  "ALTER USER { %s | ALL } [ IN DATABASE %s ] SET %s FROM CURRENT\n"
+					  "ALTER USER { %s | ALL } [ IN DATABASE %s ] RESET %s\n"
+					  "ALTER USER { %s | ALL } [ IN DATABASE %s ] RESET ALL\n"
 					  "\n"
 					  "%s\n"
 					  "\n"
@@ -1217,13 +1215,17 @@ sql_help_ALTER_USER(PQExpBuffer buf)
 					  _("name"),
 					  _("new_name"),
 					  _("role_specification"),
+					  _("database_name"),
 					  _("configuration_parameter"),
 					  _("value"),
 					  _("role_specification"),
+					  _("database_name"),
 					  _("configuration_parameter"),
 					  _("role_specification"),
+					  _("database_name"),
 					  _("configuration_parameter"),
 					  _("role_specification"),
+					  _("database_name"),
 					  _("where role_specification can be:"),
 					  _("role_name"));
 }

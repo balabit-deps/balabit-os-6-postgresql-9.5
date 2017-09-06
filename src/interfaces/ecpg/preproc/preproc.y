@@ -73,7 +73,7 @@ vmmerror(int error_code, enum errortype type, const char *error, va_list ap)
 	/* localize the error message string */
 	error = _(error);
 
-	fprintf(stderr, "%s:%d: ", input_filename, yylineno);
+	fprintf(stderr, "%s:%d: ", input_filename, base_yylineno);
 
 	switch(type)
 	{
@@ -118,10 +118,10 @@ mmfatal(int error_code, const char *error, ...)
 	vmmerror(error_code, ET_ERROR, error, ap);
 	va_end(ap);
 
-	if (yyin)
-		fclose(yyin);
-	if (yyout)
-		fclose(yyout);
+	if (base_yyin)
+		fclose(base_yyin);
+	if (base_yyout)
+		fclose(base_yyout);
 
 	if (strcmp(output_filename, "-") != 0 && unlink(output_filename) != 0)
 		fprintf(stderr, _("could not remove output file \"%s\"\n"), output_filename);
@@ -196,7 +196,7 @@ make3_str(char *str1, char *str2, char *str3)
 static char *
 make_name(void)
 {
-	return mm_strdup(yytext);
+	return mm_strdup(base_yytext);
 }
 
 static char *
@@ -208,7 +208,7 @@ create_questionmarks(char *name, bool array)
 
 	/* In case we have a struct, we have to print as many "?" as there are attributes in the struct
 	 * An array is only allowed together with an element argument
-	 * This is essantially only used for inserts, but using a struct as input parameter is an error anywhere else
+	 * This is essentially only used for inserts, but using a struct as input parameter is an error anywhere else
 	 * so we don't have to worry here. */
 
 	if (p->type->type == ECPGt_struct || (array && p->type->type == ECPGt_array && p->type->u.element->type == ECPGt_struct))
@@ -1623,7 +1623,7 @@ prog: statements;
 				if (connection)
 					mmerror(PARSE_ERROR, ET_ERROR, "AT option not allowed in CLOSE DATABASE statement");
 
-				fprintf(yyout, "{ ECPGdisconnect(__LINE__, \"CURRENT\");");
+				fprintf(base_yyout, "{ ECPGdisconnect(__LINE__, \"CURRENT\");");
 				whenever_action(2);
 				free($1);
 				break;
@@ -1805,7 +1805,7 @@ prog: statements;
 	{ output_statement($1, 1, ECPGst_prepnormal); }
 |  TransactionStmt
 	{
-		fprintf(yyout, "{ ECPGtrans(__LINE__, %s, \"%s\");", connection ? connection : "NULL", $1);
+		fprintf(base_yyout, "{ ECPGtrans(__LINE__, %s, \"%s\");", connection ? connection : "NULL", $1);
 		whenever_action(2);
 		free($1);
 	}
@@ -1827,7 +1827,7 @@ prog: statements;
  { output_statement($1, 0, ECPGst_normal); }
 	| ECPGAllocateDescr
 	{
-		fprintf(yyout,"ECPGallocate_desc(__LINE__, %s);",$1);
+		fprintf(base_yyout,"ECPGallocate_desc(__LINE__, %s);",$1);
 		whenever_action(0);
 		free($1);
 	}
@@ -1836,7 +1836,7 @@ prog: statements;
 		if (connection)
 			mmerror(PARSE_ERROR, ET_ERROR, "AT option not allowed in CONNECT statement");
 
-		fprintf(yyout, "{ ECPGconnect(__LINE__, %d, %s, %d); ", compat, $1, autocommit);
+		fprintf(base_yyout, "{ ECPGconnect(__LINE__, %d, %s, %d); ", compat, $1, autocommit);
 		reset_variables();
 		whenever_action(2);
 		free($1);
@@ -1847,7 +1847,7 @@ prog: statements;
 	}
 	| ECPGDeallocateDescr
 	{
-		fprintf(yyout,"ECPGdeallocate_desc(__LINE__, %s);",$1);
+		fprintf(base_yyout,"ECPGdeallocate_desc(__LINE__, %s);",$1);
 		whenever_action(0);
 		free($1);
 	}
@@ -1857,10 +1857,10 @@ prog: statements;
 	}
 	| ECPGDescribe
 	{
-		fprintf(yyout, "{ ECPGdescribe(__LINE__, %d, %s,", compat, $1);
+		fprintf(base_yyout, "{ ECPGdescribe(__LINE__, %d, %s,", compat, $1);
 		dump_variables(argsresult, 1);
-		fputs("ECPGt_EORT);", yyout);
-		fprintf(yyout, "}");
+		fputs("ECPGt_EORT);", base_yyout);
+		fprintf(base_yyout, "}");
 		output_line_number();
 
 		free($1);
@@ -1870,7 +1870,7 @@ prog: statements;
 		if (connection)
 			mmerror(PARSE_ERROR, ET_ERROR, "AT option not allowed in DISCONNECT statement");
 
-		fprintf(yyout, "{ ECPGdisconnect(__LINE__, %s);",
+		fprintf(base_yyout, "{ ECPGdisconnect(__LINE__, %s);",
 				$1 ? $1 : "\"CURRENT\"");
 		whenever_action(2);
 		free($1);
@@ -1881,11 +1881,11 @@ prog: statements;
 		const char *con = connection ? connection : "NULL";
 
 		if (strcmp($1, "all") == 0)
-			fprintf(yyout, "{ ECPGdeallocate_all(__LINE__, %d, %s);", compat, con);
+			fprintf(base_yyout, "{ ECPGdeallocate_all(__LINE__, %d, %s);", compat, con);
 		else if ($1[0] == ':')
-			fprintf(yyout, "{ ECPGdeallocate(__LINE__, %d, %s, %s);", compat, con, $1+1);
+			fprintf(base_yyout, "{ ECPGdeallocate(__LINE__, %d, %s, %s);", compat, con, $1+1);
 		else
-			fprintf(yyout, "{ ECPGdeallocate(__LINE__, %d, %s, \"%s\");", compat, con, $1);
+			fprintf(base_yyout, "{ ECPGdeallocate(__LINE__, %d, %s, \"%s\");", compat, con, $1);
 
 		whenever_action(2);
 		free($1);
@@ -1916,7 +1916,7 @@ prog: statements;
 	}
 	| ECPGSetAutocommit
 	{
-		fprintf(yyout, "{ ECPGsetcommit(__LINE__, \"%s\", %s);", $1, connection ? connection : "NULL");
+		fprintf(base_yyout, "{ ECPGsetcommit(__LINE__, \"%s\", %s);", $1, connection ? connection : "NULL");
 		whenever_action(2);
 		free($1);
 	}
@@ -1925,7 +1925,7 @@ prog: statements;
 		if (connection)
 			mmerror(PARSE_ERROR, ET_ERROR, "AT option not allowed in SET CONNECTION statement");
 
-		fprintf(yyout, "{ ECPGsetconn(__LINE__, %s);", $1);
+		fprintf(base_yyout, "{ ECPGsetconn(__LINE__, %s);", $1);
 		whenever_action(2);
 		free($1);
 	}
@@ -1947,7 +1947,7 @@ prog: statements;
 		if (connection)
 			mmerror(PARSE_ERROR, ET_ERROR, "AT option not allowed in TYPE statement");
 
-		fprintf(yyout, "%s", $1);
+		fprintf(base_yyout, "%s", $1);
 		free($1);
 		output_line_number();
 	}
@@ -2131,9 +2131,13 @@ prog: statements;
 
 
  AlterUserSetStmt:
- ALTER USER RoleSpec SetResetClause
+ ALTER USER RoleSpec opt_in_database SetResetClause
  { 
- $$ = cat_str(3,mm_strdup("alter user"),$3,$4);
+ $$ = cat_str(4,mm_strdup("alter user"),$3,$4,$5);
+}
+|  ALTER USER ALL opt_in_database SetResetClause
+ { 
+ $$ = cat_str(3,mm_strdup("alter user all"),$4,$5);
 }
 ;
 
@@ -4102,6 +4106,10 @@ mmerror(PARSE_ERROR, ET_WARNING, "unsupported feature will be passed to server")
  ecpg_fconst
  { 
  $$ = $1;
+}
+|  '+' ecpg_fconst
+ { 
+ $$ = cat_str(2,mm_strdup("+"),$2);
 }
 |  '-' ecpg_fconst
  { 
@@ -13795,14 +13803,14 @@ statement: ecpgstart at stmt ';' { connection = NULL; }
 				| ecpgstart stmt ';'
 				| ecpgstart ECPGVarDeclaration
 				{
-					fprintf(yyout, "%s", $2);
+					fprintf(base_yyout, "%s", $2);
 					free($2);
 					output_line_number();
 				}
 				| ECPGDeclaration
-				| c_thing               { fprintf(yyout, "%s", $1); free($1); }
-				| CPP_LINE              { fprintf(yyout, "%s", $1); free($1); }
-				| '{'                   { braces_open++; fputs("{", yyout); }
+				| c_thing               { fprintf(base_yyout, "%s", $1); free($1); }
+				| CPP_LINE              { fprintf(base_yyout, "%s", $1); free($1); }
+				| '{'                   { braces_open++; fputs("{", base_yyout); }
 				| '}'
 		{
 			remove_typedefs(braces_open);
@@ -13812,7 +13820,7 @@ statement: ecpgstart at stmt ';' { connection = NULL; }
 				free(current_function);
 				current_function = NULL;
 			}
-			fputs("}", yyout);
+			fputs("}", base_yyout);
 		}
 		;
 
@@ -14142,7 +14150,7 @@ ECPGExecuteImmediateStmt: EXECUTE IMMEDIATE execstring
 			  $$ = $3;
 			};
 /*
- * variable decalartion outside exec sql declare block
+ * variable declaration outside exec sql declare block
  */
 ECPGVarDeclaration: single_vt_declaration;
 
@@ -14167,10 +14175,10 @@ ecpg_interval:	opt_interval	{ $$ = $1; }
  * variable declaration inside exec sql declare block
  */
 ECPGDeclaration: sql_startdeclare
-		{ fputs("/* exec sql begin declare section */", yyout); }
+		{ fputs("/* exec sql begin declare section */", base_yyout); }
 		var_type_declarations sql_enddeclare
 		{
-			fprintf(yyout, "%s/* exec sql end declare section */", $3);
+			fprintf(base_yyout, "%s/* exec sql end declare section */", $3);
 			free($3);
 			output_line_number();
 		}
@@ -14204,7 +14212,7 @@ type_declaration: S_TYPEDEF
 	{
 		add_typedef($5, $6.index1, $6.index2, $3.type_enum, $3.type_dimension, $3.type_index, initializer, *$4 ? 1 : 0);
 
-		fprintf(yyout, "typedef %s %s %s %s;\n", $3.type_str, *$4 ? "*" : "", $5, $6.str);
+		fprintf(base_yyout, "typedef %s %s %s %s;\n", $3.type_str, *$4 ? "*" : "", $5, $6.str);
 		output_line_number();
 		$$ = mm_strdup("");
 	};
@@ -14494,7 +14502,7 @@ struct_union_type_with_symbol: s_struct_union_symbol
 			free(forward_name);
 			forward_name = NULL;
 
-			/* This is essantially a typedef but needs the keyword struct/union as well.
+			/* This is essentially a typedef but needs the keyword struct/union as well.
 			 * So we create the typedef for each struct definition with symbol */
 			for (ptr = types; ptr != NULL; ptr = ptr->next)
 			{
@@ -15062,7 +15070,7 @@ descriptor_item:	SQL_CARDINALITY			{ $$ = ECPGd_cardinality; }
 		;
 
 /*
- * set/reset the automatic transaction mode, this needs a differnet handling
+ * set/reset the automatic transaction mode, this needs a different handling
  * as the other set commands
  */
 ECPGSetAutocommit:	SET SQL_AUTOCOMMIT '=' on_off	{ $$ = $4; }
@@ -15074,7 +15082,7 @@ on_off: ON				{ $$ = mm_strdup("on"); }
 		;
 
 /*
- * set the actual connection, this needs a differnet handling as the other
+ * set the actual connection, this needs a different handling as the other
  * set commands
  */
 ECPGSetConnection:	SET CONNECTION TO connection_object { $$ = $4; }
@@ -15696,18 +15704,10 @@ void base_yyerror(const char *error)
 {
 	/* translator: %s is typically the translation of "syntax error" */
 	mmerror(PARSE_ERROR, ET_ERROR, "%s at or near \"%s\"",
-			_(error), token_start ? token_start : yytext);
+			_(error), token_start ? token_start : base_yytext);
 }
 
 void parser_init(void)
 {
  /* This function is empty. It only exists for compatibility with the backend parser right now. */
 }
-
-/*
- * Must undefine base_yylex before including pgc.c, since we want it
- * to create the function base_yylex not filtered_base_yylex.
- */
-#undef base_yylex
-
-#include "pgc.c"

@@ -1,3 +1,9 @@
+postgresql-9.5 (9.5.8-0ubuntu0.16.04.1bb2) xenial; urgency=medium
+
+  * Balabit patched version
+
+ -- Balabit Platform Team <devnull@dev.null>  Mon, 18 Sep 2017 12:21:29 +0200
+
 postgresql-9.5 (9.5.8-0ubuntu0.16.04.1bb1) xenial; urgency=medium
 
   * Balabit patched version

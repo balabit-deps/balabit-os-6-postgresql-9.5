@@ -1,3 +1,23 @@
+postgresql-9.5 (9.5.10-0ubuntu0.16.04) xenial-security; urgency=medium
+
+  * New upstream release (LP: #1730661)
+    - Previously, a race condition allowed some table rows to be omitted from
+      the index. It may be necessary to reindex existing BRIN indexes to
+      recover from past occurrences of this problem.
+    - Details about other changes at full changelog:
+      https://www.postgresql.org/docs/9.5/static/release-9-5-10.html
+
+ -- Christian Ehrhardt <christian.ehrhardt@canonical.com>  Tue, 07 Nov 2017 14:33:50 +0100
+
+postgresql-9.5 (9.5.9-0ubuntu0.16.04) xenial; urgency=medium
+
+  * New upstream release (LP: #1713979)
+    - fix upgrade regressions of the former security release
+    - Details about other changes at full changelog:
+      https://www.postgresql.org/docs/9.5/static/release-9-5-9.html
+
+ -- Christian Ehrhardt <christian.ehrhardt@canonical.com>  Wed, 30 Aug 2017 13:01:13 +0200
+
 postgresql-9.5 (9.5.8-0ubuntu0.16.04.1bb2) xenial; urgency=medium
 
   * Balabit patched version

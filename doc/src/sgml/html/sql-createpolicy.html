@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.8 Documentation"
+TITLE="PostgreSQL 9.5.10 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="SQL Commands"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2017-08-07T21:31:58"></HEAD
+CONTENT="2017-11-06T22:31:20"></HEAD
 ><BODY
 CLASS="REFENTRY"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.8 Documentation</A
+>PostgreSQL 9.5.10 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -95,7 +95,7 @@ NAME="SQL-CREATEPOLICY"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN77703"
+NAME="AEN77726"
 ></A
 ><H2
 >Name</H2
@@ -103,7 +103,7 @@ NAME="AEN77703"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN77706"
+NAME="AEN77729"
 ></A
 ><H2
 >Synopsis</H2
@@ -143,7 +143,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN77713"
+NAME="AEN77736"
 ></A
 ><H2
 >Description</H2
@@ -225,29 +225,17 @@ CLASS="LITERAL"
 ><P
 >   Policies can be applied for specific commands or for specific roles.  The
    default for newly created policies is that they apply for all commands and
-   roles, unless otherwise specified.  If multiple policies apply to a given
-   statement, they will be combined using OR (although <TT
-CLASS="LITERAL"
->ON CONFLICT DO
-   UPDATE</TT
-> and <TT
-CLASS="LITERAL"
->INSERT</TT
-> policies are not combined in this way, but
-   rather enforced as noted at each stage of <TT
-CLASS="LITERAL"
->ON CONFLICT</TT
-> execution).
+   roles, unless otherwise specified.
   </P
 ><P
->   For commands that can have both <TT
+>   For policies that can have both <TT
 CLASS="LITERAL"
 >USING</TT
 >
    and <TT
 CLASS="LITERAL"
 >WITH CHECK</TT
-> policies (<TT
+> expressions (<TT
 CLASS="LITERAL"
 >ALL</TT
 >
@@ -258,18 +246,18 @@ CLASS="LITERAL"
 CLASS="LITERAL"
 >WITH CHECK</TT
 >
-   policy is defined, then the <TT
+   expression is defined, then the <TT
 CLASS="LITERAL"
 >USING</TT
-> policy will be used
-   both for which rows are visible (normal <TT
+> expression will be
+   used both to determine which rows are visible (normal
+   <TT
 CLASS="LITERAL"
 >USING</TT
-> case)
-   and for which rows will be allowed to be added (<TT
+> case) and which new rows will be allowed to be
+   added (<TT
 CLASS="LITERAL"
->WITH
-   CHECK</TT
+>WITH CHECK</TT
 > case).
   </P
 ><P
@@ -284,7 +272,7 @@ CLASS="QUOTE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN77748"
+NAME="AEN77768"
 ></A
 ><H2
 >Parameters</H2
@@ -450,7 +438,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN77798"
+NAME="AEN77818"
 ></A
 ><H3
 >Per-Command Policies</H3
@@ -482,8 +470,7 @@ CLASS="LITERAL"
 CLASS="LITERAL"
 >ALL</TT
 > policy and the more
-         specific policy (or policies) will be combined using
-         OR, as usual for overlapping policies.
+         specific policy (or policies) will be applied.
          Additionally, <TT
 CLASS="LITERAL"
 >ALL</TT
@@ -669,20 +656,27 @@ CLASS="LITERAL"
          to <TT
 CLASS="LITERAL"
 >UPDATE</TT
-> commands (or auxiliary <TT
+>, <TT
 CLASS="LITERAL"
->ON
-         CONFLICT DO UPDATE</TT
-> clauses of <TT
+>SELECT FOR UPDATE</TT
+>
+         and <TT
+CLASS="LITERAL"
+>SELECT FOR SHARE</TT
+> commands, as well as
+         auxiliary <TT
+CLASS="LITERAL"
+>ON CONFLICT DO UPDATE</TT
+> clauses of
+         <TT
 CLASS="LITERAL"
 >INSERT</TT
->
-         commands).  Since <TT
+> commands.  Since <TT
 CLASS="LITERAL"
 >UPDATE</TT
-> involves pulling an
-         existing record and then making changes to some portion (but
-         possibly not all) of the record, <TT
+>
+         involves pulling an existing record and replacing it with a new
+         modified record, <TT
 CLASS="LITERAL"
 >UPDATE</TT
 >
@@ -709,63 +703,6 @@ CLASS="LITERAL"
          modified rows are allowed to be stored back into the relation.
        </P
 ><P
->         When an <TT
-CLASS="LITERAL"
->UPDATE</TT
-> command is used with a
-         <TT
-CLASS="LITERAL"
->WHERE</TT
-> clause or a <TT
-CLASS="LITERAL"
->RETURNING</TT
->
-         clause, <TT
-CLASS="LITERAL"
->SELECT</TT
-> rights are also required on the
-         relation being updated and the appropriate <TT
-CLASS="LITERAL"
->SELECT</TT
->
-         and <TT
-CLASS="LITERAL"
->ALL</TT
-> policies will be combined (using OR for any
-         overlapping <TT
-CLASS="LITERAL"
->SELECT</TT
-> related policies found) with the
-         <TT
-CLASS="LITERAL"
->USING</TT
-> clause of the <TT
-CLASS="LITERAL"
->UPDATE</TT
-> policy
-         using AND.  Therefore, in order for a user to be able to
-         <TT
-CLASS="LITERAL"
->UPDATE</TT
-> specific rows, the user must have access
-         to the row(s) through a <TT
-CLASS="LITERAL"
->SELECT</TT
->
-         or <TT
-CLASS="LITERAL"
->ALL</TT
-> policy and the row(s) must pass
-         the <TT
-CLASS="LITERAL"
->UPDATE</TT
-> policy's <TT
-CLASS="LITERAL"
->USING</TT
->
-         expression.
-       </P
-><P
 >         Any rows whose updated values do not pass the
          <TT
 CLASS="LITERAL"
@@ -785,72 +722,101 @@ CLASS="LITERAL"
 > cases.
        </P
 ><P
->         Note, however, that <TT
-CLASS="LITERAL"
->INSERT</TT
-> with <TT
-CLASS="LITERAL"
->ON CONFLICT
-         DO UPDATE</TT
-> requires that an <TT
+>         Typically an <TT
 CLASS="LITERAL"
 >UPDATE</TT
-> policy
+> command also needs to read
+         data from columns in the relation being updated (e.g., in a
          <TT
 CLASS="LITERAL"
->USING</TT
-> expression always be enforced as a
+>WHERE</TT
+> clause or a <TT
+CLASS="LITERAL"
+>RETURNING</TT
+>
+         clause, or in an expression on the right hand side of the
          <TT
 CLASS="LITERAL"
->WITH CHECK</TT
-> expression.  This
+>SET</TT
+> clause).  In this case,
          <TT
 CLASS="LITERAL"
->UPDATE</TT
-> policy must always pass when the
+>SELECT</TT
+> rights are also required on the relation
+         being updated, and the appropriate <TT
+CLASS="LITERAL"
+>SELECT</TT
+> or
          <TT
-CLASS="LITERAL"
->UPDATE</TT
-> path is taken.  Any existing row that
-         necessitates that the <TT
-CLASS="LITERAL"
->UPDATE</TT
-> path be taken must
-         pass the (<TT
-CLASS="LITERAL"
->UPDATE</TT
-> or <TT
 CLASS="LITERAL"
 >ALL</TT
->)
+> policies will be applied in addition to
+         the <TT
+CLASS="LITERAL"
+>UPDATE</TT
+> policies.  Thus the user must have
+         access to the row(s) being updated through a <TT
+CLASS="LITERAL"
+>SELECT</TT
+>
+         or <TT
+CLASS="LITERAL"
+>ALL</TT
+> policy in addition to being granted
+         permission to update the row(s) via an <TT
+CLASS="LITERAL"
+>UPDATE</TT
+>
+         or <TT
+CLASS="LITERAL"
+>ALL</TT
+> policy.
+       </P
+><P
+>         When an <TT
+CLASS="LITERAL"
+>INSERT</TT
+> command has an auxiliary
+         <TT
+CLASS="LITERAL"
+>ON CONFLICT DO UPDATE</TT
+> clause, if the
+         <TT
+CLASS="LITERAL"
+>UPDATE</TT
+> path is taken, the row to be updated is
+         first checked against the <TT
+CLASS="LITERAL"
+>USING</TT
+> expressions of
+         any <TT
+CLASS="LITERAL"
+>UPDATE</TT
+> policies, and then the new updated row
+         is checked against the <TT
+CLASS="LITERAL"
+>WITH CHECK</TT
+> expressions.
+         Note, however, that unlike a standalone <TT
+CLASS="LITERAL"
+>UPDATE</TT
+>
+         command, if the existing row does not pass the
          <TT
 CLASS="LITERAL"
 >USING</TT
-> qualifications (combined using OR), which
-         are always enforced as <TT
-CLASS="LITERAL"
->WITH CHECK</TT
->
-         options in this context.  (The <TT
+> expressions, an error will be thrown (the
+         <TT
 CLASS="LITERAL"
 >UPDATE</TT
-> path will
-         <SPAN
+> path will <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >never</I
 ></SPAN
-> be silently avoided; an error will be thrown
-         instead.)  Finally, the final row appended to the relation must pass
-         any <TT
-CLASS="LITERAL"
->WITH CHECK</TT
-> options that a conventional
-         <TT
-CLASS="LITERAL"
->UPDATE</TT
-> is required to pass.
+> be silently
+         avoided).
        </P
 ></DD
 ><DT
@@ -890,61 +856,51 @@ CLASS="LITERAL"
 > policy.
        </P
 ><P
->         When a <TT
+>         In most cases a <TT
 CLASS="LITERAL"
 >DELETE</TT
-> command is used with a
-         <TT
+> command also needs to read
+         data from columns in the relation that it is deleting from (e.g.,
+         in a <TT
 CLASS="LITERAL"
 >WHERE</TT
-> clause or a <TT
+> clause or a
+         <TT
 CLASS="LITERAL"
 >RETURNING</TT
->
-         clause, <TT
+> clause). In this case,
+         <TT
 CLASS="LITERAL"
 >SELECT</TT
-> rights are also required on the
-         relation being updated and the appropriate <TT
+> rights are also required on the relation,
+         and the appropriate <TT
 CLASS="LITERAL"
 >SELECT</TT
->
-         and <TT
+> or
+         <TT
 CLASS="LITERAL"
 >ALL</TT
-> policies will be combined (using OR for any
-         overlapping <TT
-CLASS="LITERAL"
->SELECT</TT
-> related policies found) with the
-         <TT
-CLASS="LITERAL"
->USING</TT
-> clause of the <TT
+> policies will be applied in addition to
+         the <TT
 CLASS="LITERAL"
 >DELETE</TT
-> policy
-         using AND.  Therefore, in order for a user to be able to
-         <TT
-CLASS="LITERAL"
->DELETE</TT
-> specific rows, the user must have access
-         to the row(s) through a <TT
+> policies.  Thus the user must have
+         access to the row(s) being deleted through a <TT
 CLASS="LITERAL"
 >SELECT</TT
 >
          or <TT
 CLASS="LITERAL"
 >ALL</TT
-> policy and the row(s) must pass
-         the <TT
+> policy in addition to being granted
+         permission to delete the row(s) via a <TT
 CLASS="LITERAL"
 >DELETE</TT
-> policy's <TT
+> or
+         <TT
 CLASS="LITERAL"
->USING</TT
->
-         expression.
+>ALL</TT
+> policy.
        </P
 ><P
 >         A <TT
@@ -962,11 +918,112 @@ CLASS="LITERAL"
 ></DL
 ></DIV
 ></DIV
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN77947"
+></A
+><H3
+>Application of Multiple Policies</H3
+><P
+>    When multiple policies of different command types apply to the same command
+    (for example, <TT
+CLASS="LITERAL"
+>SELECT</TT
+> and <TT
+CLASS="LITERAL"
+>UPDATE</TT
+>
+    policies applied to an <TT
+CLASS="LITERAL"
+>UPDATE</TT
+> command), then the user
+    must have both types of permissions (for example, permission to select rows
+    from the relation as well as permission to update them).  Thus the
+    expressions for one type of policy are combined with the expressions for
+    the other type of policy using the <TT
+CLASS="LITERAL"
+>AND</TT
+> operator.
+   </P
+><P
+>    When multiple policies of the same command type apply to the same command,
+    then at least one of the policies must grant access to the relation.  Thus
+    the expressions from all the policies of that type are combined using the
+    <TT
+CLASS="LITERAL"
+>OR</TT
+> operator.  If there are no applicable policies, then
+    access is denied.
+   </P
+><P
+>    Note that, for the purposes of combining multiple policies,
+    <TT
+CLASS="LITERAL"
+>ALL</TT
+> policies are treated as having the same type as
+    whichever other type of policy is being applied.
+   </P
+><P
+>    For example, in an <TT
+CLASS="LITERAL"
+>UPDATE</TT
+> command requiring both
+    <TT
+CLASS="LITERAL"
+>SELECT</TT
+> and <TT
+CLASS="LITERAL"
+>UPDATE</TT
+> permissions, if
+    there are multiple applicable policies of each type, they will be combined
+    as follows:
+
+</P><PRE
+CLASS="PROGRAMLISTING"
+>(
+  <TT
+CLASS="REPLACEABLE"
+><I
+>expression</I
+></TT
+> from SELECT/ALL policy 1
+  OR
+  <TT
+CLASS="REPLACEABLE"
+><I
+>expression</I
+></TT
+> from SELECT/ALL policy 2
+  OR
+  ...
+)
+AND
+(
+  <TT
+CLASS="REPLACEABLE"
+><I
+>expression</I
+></TT
+> from UPDATE/ALL policy 1
+  OR
+  <TT
+CLASS="REPLACEABLE"
+><I
+>expression</I
+></TT
+> from UPDATE/ALL policy 2
+  OR
+  ...
+)</PRE
+><P>
+   </P
+></DIV
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN77936"
+NAME="AEN77967"
 ></A
 ><H2
 >Notes</H2
@@ -1026,7 +1083,7 @@ HREF="ddl-rowsecurity.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN77945"
+NAME="AEN77976"
 ></A
 ><H2
 >Compatibility</H2
@@ -1044,7 +1101,7 @@ CLASS="PRODUCTNAME"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN77950"
+NAME="AEN77981"
 ></A
 ><H2
 >See Also</H2

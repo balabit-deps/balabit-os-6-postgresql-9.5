@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
 ><TITLE
@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.10 Documentation"
+TITLE="PostgreSQL 9.5.11 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="Writing A Foreign Data Wrapper"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2017-11-06T22:31:20"></HEAD
+CONTENT="2018-02-05T21:21:52"></HEAD
 ><BODY
 CLASS="SECT1"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.10 Documentation</A
+>PostgreSQL 9.5.11 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -629,10 +629,16 @@ CLASS="REPLACEABLE"
 ></TT
 >, as the core system can
      generate junk columns of these names.
+     If the extra expressions are more complex than simple Vars, they
+     must be run through <CODE
+CLASS="FUNCTION"
+>eval_const_expressions</CODE
+>
+     before adding them to the targetlist.
     </P
 ><P
->     This function is called in the rewriter, not the planner, so the
-     information available is a bit different from that available to the
+>     Although this function is called during planning, the
+     information provided is a bit different from that available to other
      planning routines.
      <TT
 CLASS="LITERAL"

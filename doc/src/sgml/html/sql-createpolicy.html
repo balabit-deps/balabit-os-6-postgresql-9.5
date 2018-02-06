@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
 ><TITLE
@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.10 Documentation"
+TITLE="PostgreSQL 9.5.11 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="SQL Commands"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2017-11-06T22:31:20"></HEAD
+CONTENT="2018-02-05T21:21:52"></HEAD
 ><BODY
 CLASS="REFENTRY"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.10 Documentation</A
+>PostgreSQL 9.5.11 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -95,7 +95,7 @@ NAME="SQL-CREATEPOLICY"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN77726"
+NAME="AEN77770"
 ></A
 ><H2
 >Name</H2
@@ -103,7 +103,7 @@ NAME="AEN77726"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN77729"
+NAME="AEN77773"
 ></A
 ><H2
 >Synopsis</H2
@@ -143,7 +143,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN77736"
+NAME="AEN77780"
 ></A
 ><H2
 >Description</H2
@@ -225,7 +225,13 @@ CLASS="LITERAL"
 ><P
 >   Policies can be applied for specific commands or for specific roles.  The
    default for newly created policies is that they apply for all commands and
-   roles, unless otherwise specified.
+   roles, unless otherwise specified.  Multiple policies may apply to a single
+   command; see below for more details.
+   <A
+HREF="sql-createpolicy.html#SQL-CREATEPOLICY-SUMMARY"
+>Table 1</A
+> summarizes how the different types
+   of policy apply to specific commands.
   </P
 ><P
 >   For policies that can have both <TT
@@ -272,7 +278,7 @@ CLASS="QUOTE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN77768"
+NAME="AEN77813"
 ></A
 ><H2
 >Parameters</H2
@@ -438,7 +444,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN77818"
+NAME="AEN77863"
 ></A
 ><H3
 >Per-Command Policies</H3
@@ -917,11 +923,247 @@ CLASS="LITERAL"
 ></DD
 ></DL
 ></DIV
+><DIV
+CLASS="TABLE"
+><A
+NAME="SQL-CREATEPOLICY-SUMMARY"
+></A
+><P
+><B
+>Table 1. Policies Applied by Command Type</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><COL><COL><COL><COL
+WIDTH="1*"
+TITLE="update-using"><COL
+WIDTH="1*"
+TITLE="update-check"><COL><THEAD
+><TR
+><TH
+ROWSPAN="2"
+>Command</TH
+><TH
+><TT
+CLASS="LITERAL"
+>SELECT/ALL policy</TT
+></TH
+><TH
+><TT
+CLASS="LITERAL"
+>INSERT/ALL policy</TT
+></TH
+><TH
+COLSPAN="2"
+><TT
+CLASS="LITERAL"
+>UPDATE/ALL policy</TT
+></TH
+><TH
+><TT
+CLASS="LITERAL"
+>DELETE/ALL policy</TT
+></TH
+></TR
+><TR
+><TH
+><TT
+CLASS="LITERAL"
+>USING expression</TT
+></TH
+><TH
+><TT
+CLASS="LITERAL"
+>WITH CHECK expression</TT
+></TH
+><TH
+><TT
+CLASS="LITERAL"
+>USING expression</TT
+></TH
+><TH
+><TT
+CLASS="LITERAL"
+>WITH CHECK expression</TT
+></TH
+><TH
+><TT
+CLASS="LITERAL"
+>USING expression</TT
+></TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+><TT
+CLASS="COMMAND"
+>SELECT</TT
+></TD
+><TD
+>Existing row</TD
+><TD
+>&mdash;</TD
+><TD
+>&mdash;</TD
+><TD
+>&mdash;</TD
+><TD
+>&mdash;</TD
+></TR
+><TR
+><TD
+><TT
+CLASS="COMMAND"
+>SELECT FOR UPDATE/SHARE</TT
+></TD
+><TD
+>Existing row</TD
+><TD
+>&mdash;</TD
+><TD
+>Existing row</TD
+><TD
+>&mdash;</TD
+><TD
+>&mdash;</TD
+></TR
+><TR
+><TD
+><TT
+CLASS="COMMAND"
+>INSERT</TT
+></TD
+><TD
+>&mdash;</TD
+><TD
+>New row</TD
+><TD
+>&mdash;</TD
+><TD
+>&mdash;</TD
+><TD
+>&mdash;</TD
+></TR
+><TR
+><TD
+><TT
+CLASS="COMMAND"
+>INSERT ... RETURNING</TT
+></TD
+><TD
+>        New row
+        <A
+NAME="RLS-SELECT-PRIV"
+HREF="#FTN.RLS-SELECT-PRIV"
+><SPAN
+CLASS="footnote"
+>[a]</SPAN
+></A
+>
+       </TD
+><TD
+>New row</TD
+><TD
+>&mdash;</TD
+><TD
+>&mdash;</TD
+><TD
+>&mdash;</TD
+></TR
+><TR
+><TD
+><TT
+CLASS="COMMAND"
+>UPDATE</TT
+></TD
+><TD
+>        Existing &amp; new rows
+        <A
+HREF="sql-createpolicy.html#FTN.RLS-SELECT-PRIV"
+><SPAN
+CLASS="footnote"
+>[a]</SPAN
+></A
+>
+       </TD
+><TD
+>&mdash;</TD
+><TD
+>Existing row</TD
+><TD
+>New row</TD
+><TD
+>&mdash;</TD
+></TR
+><TR
+><TD
+><TT
+CLASS="COMMAND"
+>DELETE</TT
+></TD
+><TD
+>        Existing row
+        <A
+HREF="sql-createpolicy.html#FTN.RLS-SELECT-PRIV"
+><SPAN
+CLASS="footnote"
+>[a]</SPAN
+></A
+>
+       </TD
+><TD
+>&mdash;</TD
+><TD
+>&mdash;</TD
+><TD
+>&mdash;</TD
+><TD
+>Existing row</TD
+></TR
+><TR
+><TD
+><TT
+CLASS="COMMAND"
+>ON CONFLICT DO UPDATE</TT
+></TD
+><TD
+>Existing &amp; new rows</TD
+><TD
+>&mdash;</TD
+><TD
+>Existing row</TD
+><TD
+>New row</TD
+><TD
+>&mdash;</TD
+></TR
+></TBODY
+><TR
+><TD
+COLSPAN="6"
+>Notes:<BR><A
+NAME="FTN.RLS-SELECT-PRIV"
+>a. </A
+>          If read access is required to the existing or new row (for example,
+          a <TT
+CLASS="LITERAL"
+>WHERE</TT
+> or <TT
+CLASS="LITERAL"
+>RETURNING</TT
+> clause
+          that refers to columns from the relation).
+         <BR></TD
+></TR
+></TABLE
+></DIV
 ></DIV
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN77947"
+NAME="AEN78083"
 ></A
 ><H3
 >Application of Multiple Policies</H3
@@ -1023,7 +1265,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN77967"
+NAME="AEN78103"
 ></A
 ><H2
 >Notes</H2
@@ -1083,7 +1325,7 @@ HREF="ddl-rowsecurity.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN77976"
+NAME="AEN78112"
 ></A
 ><H2
 >Compatibility</H2
@@ -1101,7 +1343,7 @@ CLASS="PRODUCTNAME"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN77981"
+NAME="AEN78117"
 ></A
 ><H2
 >See Also</H2

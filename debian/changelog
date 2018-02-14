@@ -1,3 +1,13 @@
+postgresql-9.5 (9.5.11-0ubuntu0.16.04) xenial-security; urgency=medium
+
+  * New upstream release (LP: #1747676)
+    - Ensure that all temporary files made by pg_upgrade are non-world-readable
+      (CVE-2018-1053)
+    - Details about other changes at full changelog:
+      https://www.postgresql.org/docs/9.5/static/release-9-5-11.html
+
+ -- Christian Ehrhardt <christian.ehrhardt@canonical.com>  Tue, 06 Feb 2018 15:20:02 +0100
+
 postgresql-9.5 (9.5.10-0ubuntu0.16.04bb1) xenial; urgency=medium
 
   * Balabit patched version

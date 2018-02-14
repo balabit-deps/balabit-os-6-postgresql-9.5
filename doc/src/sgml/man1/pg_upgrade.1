@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: pg_upgrade
 .\"    Author: The PostgreSQL Global Development Group
-.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
-.\"      Date: 2017
-.\"    Manual: PostgreSQL 9.5.10 Documentation
-.\"    Source: PostgreSQL 9.5.10
+.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
+.\"      Date: 2018
+.\"    Manual: PostgreSQL 9.5.11 Documentation
+.\"    Source: PostgreSQL 9.5.11
 .\"  Language: English
 .\"
-.TH "PG_UPGRADE" "1" "2017" "PostgreSQL 9.5.10" "PostgreSQL 9.5.10 Documentation"
+.TH "PG_UPGRADE" "1" "2018" "PostgreSQL 9.5.11" "PostgreSQL 9.5.11 Documentation"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -500,16 +500,16 @@ for each standby server:
 .RS 4
 .\}
 .nf
-rsync \-\-archive \-\-delete \-\-hard\-links \-\-size\-only \-\-no\-inc\-recursive old_pgdata new_pgdata remote_dir
+rsync \-\-archive \-\-delete \-\-hard\-links \-\-size\-only \-\-no\-inc\-recursive old_cluster new_cluster remote_dir
 .fi
 .if n \{\
 .RE
 .\}
 .sp
 where
-\fBold_pgdata\fR
+\fBold_cluster\fR
 and
-\fBnew_pgdata\fR
+\fBnew_cluster\fR
 are relative to the current directory on the primary, and
 \fBremote_dir\fR
 is
@@ -522,8 +522,8 @@ manual page for details on specifying the remote directory, e\&.g\&.
 .RS 4
 .\}
 .nf
-rsync \-\-archive \-\-delete \-\-hard\-links \-\-size\-only \-\-no\-inc\-recursive /opt/PostgreSQL/9\&.5/data \e
-      /opt/PostgreSQL/9\&.6/data standby\&.example\&.com:/opt/PostgreSQL
+rsync \-\-archive \-\-delete \-\-hard\-links \-\-size\-only \-\-no\-inc\-recursive /opt/PostgreSQL/9\&.5 \e
+      /opt/PostgreSQL/9\&.6 standby\&.example\&.com:/opt/PostgreSQL
 .fi
 .if n \{\
 .RE
@@ -708,7 +708,9 @@ with
 .IP \(bu 2.3
 .\}
 If you ran
-\fBpg_upgrade\fR\fIwithout\fR\fB\-\-link\fR
+\fBpg_upgrade\fR
+\fIwithout\fR
+\fB\-\-link\fR
 or did not start the new server, the old cluster was not modified except that, if linking started, a
 \&.old
 suffix was appended to

@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
 ><TITLE
@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.10 Documentation"
+TITLE="PostgreSQL 9.5.11 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="PostgreSQL Server Applications"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2017-11-06T22:31:20"></HEAD
+CONTENT="2018-02-05T21:21:52"></HEAD
 ><BODY
 CLASS="REFENTRY"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.10 Documentation</A
+>PostgreSQL 9.5.11 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -98,7 +98,7 @@ CLASS="APPLICATION"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN99134"
+NAME="AEN99271"
 ></A
 ><H2
 >Name</H2
@@ -109,7 +109,7 @@ CLASS="PRODUCTNAME"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN99138"
+NAME="AEN99275"
 ></A
 ><H2
 >Synopsis</H2
@@ -159,7 +159,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN99159"
+NAME="AEN99296"
 ></A
 ><H2
 >Description</H2
@@ -228,7 +228,7 @@ CLASS="PRODUCTNAME"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN99175"
+NAME="AEN99312"
 ></A
 ><H2
 >Options</H2
@@ -574,7 +574,7 @@ CLASS="OPTION"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN99319"
+NAME="AEN99456"
 ></A
 ><H2
 >Usage</H2
@@ -1111,15 +1111,15 @@ CLASS="EMPHASIS"
 
 </P><PRE
 CLASS="PROGRAMLISTING"
->rsync --archive --delete --hard-links --size-only --no-inc-recursive old_pgdata new_pgdata remote_dir</PRE
+>rsync --archive --delete --hard-links --size-only --no-inc-recursive old_cluster new_cluster remote_dir</PRE
 ><P>
 
        where <TT
 CLASS="OPTION"
->old_pgdata</TT
+>old_cluster</TT
 > and <TT
 CLASS="OPTION"
->new_pgdata</TT
+>new_cluster</TT
 > are relative
        to the current directory on the primary, and <TT
 CLASS="OPTION"
@@ -1142,8 +1142,8 @@ CLASS="APPLICATION"
 
 </P><PRE
 CLASS="PROGRAMLISTING"
->rsync --archive --delete --hard-links --size-only --no-inc-recursive /opt/PostgreSQL/9.5/data \
-      /opt/PostgreSQL/9.6/data standby.example.com:/opt/PostgreSQL</PRE
+>rsync --archive --delete --hard-links --size-only --no-inc-recursive /opt/PostgreSQL/9.5 \
+      /opt/PostgreSQL/9.6 standby.example.com:/opt/PostgreSQL</PRE
 ><P>
 
        You can verify what the command will do using
@@ -1446,7 +1446,7 @@ CLASS="FILENAME"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN99522"
+NAME="AEN99659"
 ></A
 ><H2
 >Notes</H2
@@ -1564,7 +1564,7 @@ HREF="continuous-archiving.html#BACKUP-LOWLEVEL-BASE-BACKUP"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN99550"
+NAME="AEN99687"
 ></A
 ><H2
 >See Also</H2

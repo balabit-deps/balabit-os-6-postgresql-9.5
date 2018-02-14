@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
 ><TITLE
@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.10 Documentation"
+TITLE="PostgreSQL 9.5.11 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="Frontend/Backend Protocol"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2017-11-06T22:31:20"></HEAD
+CONTENT="2018-02-05T21:21:52"></HEAD
 ><BODY
 CLASS="SECT1"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.10 Documentation</A
+>PostgreSQL 9.5.11 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -117,7 +117,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN109071"
+NAME="AEN109208"
 >50.2.1. Start-up</A
 ></H2
 ><P
@@ -267,6 +267,22 @@ CLASS="FUNCTION"
         or ErrorResponse to indicate failure.
        </P
 ></DD
+><DT
+>NegotiateProtocolVersion</DT
+><DD
+><P
+>        The server does not support the minor protocol version requested
+        by the client, but does support an earlier version of the protocol;
+        this message indicates the highest supported minor version.  This
+        message will also be sent if the client requested unsupported protocol
+        options (i.e. beginning with <TT
+CLASS="LITERAL"
+>_pq_.</TT
+>) in the
+        startup packet.  This message will be followed by an ErrorResponse or
+        a message indicating the success or failure of authentication.
+       </P
+></DD
 ></DL
 ></DIV
 ><P>
@@ -281,8 +297,10 @@ CLASS="FUNCTION"
     for further messages from the server.  In this phase a backend process
     is being started, and the frontend is just an interested bystander.
     It is still possible for the startup attempt
-    to fail (ErrorResponse), but in the normal case the backend will send
-    some ParameterStatus messages, BackendKeyData, and finally ReadyForQuery.
+    to fail (ErrorResponse) or the server to decline support for the requested
+    minor protocol version (NegotiateProtocolVersion), but in the normal case
+    the backend will send some ParameterStatus messages, BackendKeyData, and
+    finally ReadyForQuery.
    </P
 ><P
 >    During this phase the backend will attempt to apply any additional
@@ -371,7 +389,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN109146"
+NAME="AEN109288"
 >50.2.2. Simple Query</A
 ></H2
 ><P
@@ -888,7 +906,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN109257"
+NAME="AEN109399"
 >50.2.4. Function Call</A
 ></H2
 ><P
@@ -1294,7 +1312,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN109343"
+NAME="AEN109485"
 >50.2.7. Canceling Requests in Progress</A
 ></H2
 ><P
@@ -1357,7 +1375,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN109351"
+NAME="AEN109493"
 >50.2.8. Termination</A
 ></H2
 ><P
@@ -1407,7 +1425,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN109360"
+NAME="AEN109502"
 >50.2.9. <ACRONYM
 CLASS="ACRONYM"
 >SSL</ACRONYM

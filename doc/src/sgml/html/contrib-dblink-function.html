@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
 ><TITLE
@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.11 Documentation"
+TITLE="PostgreSQL 9.5.12 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="dblink"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2018-02-05T21:21:52"></HEAD
+CONTENT="2018-02-27T15:01:55"></HEAD
 ><BODY
 CLASS="REFENTRY"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.11 Documentation</A
+>PostgreSQL 9.5.12 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -95,7 +95,7 @@ NAME="CONTRIB-DBLINK-FUNCTION"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN174306"
+NAME="AEN174576"
 ></A
 ><H2
 >Name</H2
@@ -103,7 +103,7 @@ NAME="AEN174306"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN174309"
+NAME="AEN174579"
 ></A
 ><H2
 >Synopsis</H2
@@ -116,7 +116,7 @@ dblink(text sql [, bool fail_on_error]) returns setof record</PRE
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN174311"
+NAME="AEN174581"
 ></A
 ><H2
 >Description</H2
@@ -147,7 +147,7 @@ CLASS="FUNCTION"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN174319"
+NAME="AEN174589"
 ></A
 ><H2
 >Arguments</H2
@@ -214,7 +214,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN174344"
+NAME="AEN174614"
 ></A
 ><H2
 >Return Value</H2
@@ -239,7 +239,8 @@ CLASS="PRODUCTNAME"
 </P><PRE
 CLASS="PROGRAMLISTING"
 >SELECT *
-    FROM dblink('dbname=mydb', 'select proname, prosrc from pg_proc')
+    FROM dblink('dbname=mydb options=-csearch_path=',
+                'select proname, prosrc from pg_proc')
       AS t1(proname name, prosrc text)
     WHERE proname LIKE 'bytea%';</PRE
 ><P>
@@ -290,7 +291,7 @@ CLASS="LITERAL"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN174360"
+NAME="AEN174630"
 ></A
 ><H2
 >Notes</H2
@@ -307,7 +308,8 @@ CLASS="FUNCTION"
 CLASS="PROGRAMLISTING"
 >CREATE VIEW myremote_pg_proc AS
   SELECT *
-    FROM dblink('dbname=postgres', 'select proname, prosrc from pg_proc')
+    FROM dblink('dbname=postgres options=-csearch_path=',
+                'select proname, prosrc from pg_proc')
     AS t1(proname name, prosrc text);
 
 SELECT * FROM myremote_pg_proc WHERE proname LIKE 'bytea%';</PRE
@@ -316,13 +318,14 @@ SELECT * FROM myremote_pg_proc WHERE proname LIKE 'bytea%';</PRE
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN174365"
+NAME="AEN174635"
 ></A
 ><H2
 >Examples</H2
 ><PRE
 CLASS="SCREEN"
->SELECT * FROM dblink('dbname=postgres', 'select proname, prosrc from pg_proc')
+>SELECT * FROM dblink('dbname=postgres options=-csearch_path=',
+                     'select proname, prosrc from pg_proc')
   AS t1(proname name, prosrc text) WHERE proname LIKE 'bytea%';
   proname   |   prosrc
 ------------+------------
@@ -340,7 +343,7 @@ CLASS="SCREEN"
  byteaout   | byteaout
 (12 rows)
 
-SELECT dblink_connect('dbname=postgres');
+SELECT dblink_connect('dbname=postgres options=-csearch_path=');
  dblink_connect
 ----------------
  OK
@@ -364,7 +367,7 @@ SELECT * FROM dblink('select proname, prosrc from pg_proc')
  byteaout   | byteaout
 (12 rows)
 
-SELECT dblink_connect('myconn', 'dbname=regression');
+SELECT dblink_connect('myconn', 'dbname=regression options=-csearch_path=');
  dblink_connect
 ----------------
  OK

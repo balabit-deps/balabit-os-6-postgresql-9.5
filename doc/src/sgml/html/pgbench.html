@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
 ><TITLE
@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.11 Documentation"
+TITLE="PostgreSQL 9.5.12 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="PostgreSQL Client Applications"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2018-02-05T21:21:52"></HEAD
+CONTENT="2018-02-27T15:01:55"></HEAD
 ><BODY
 CLASS="REFENTRY"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.11 Documentation</A
+>PostgreSQL 9.5.12 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -98,7 +98,7 @@ CLASS="APPLICATION"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN91716"
+NAME="AEN91764"
 ></A
 ><H2
 >Name</H2
@@ -109,7 +109,7 @@ CLASS="PRODUCTNAME"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN91720"
+NAME="AEN91768"
 ></A
 ><H2
 >Synopsis</H2
@@ -150,7 +150,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN91735"
+NAME="AEN91783"
 ></A
 ><H2
 >Description</H2
@@ -382,7 +382,7 @@ CLASS="OPTION"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN91781"
+NAME="AEN91829"
 ></A
 ><H2
 >Options</H2
@@ -1384,14 +1384,14 @@ CLASS="APPLICATION"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN92133"
+NAME="AEN92181"
 ></A
 ><H2
 >Notes</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN92135"
+NAME="AEN92183"
 ></A
 ><H3
 >What is the <SPAN
@@ -1476,7 +1476,7 @@ CLASS="COMMAND"
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN92166"
+NAME="AEN92214"
 ></A
 ><H3
 >Custom Scripts</H3
@@ -2137,7 +2137,7 @@ END;</PRE
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN92325"
+NAME="AEN92373"
 ></A
 ><H3
 >Per-Transaction Logging</H3
@@ -2350,7 +2350,7 @@ CLASS="OPTION"
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN92367"
+NAME="AEN92415"
 ></A
 ><H3
 >Aggregated Logging</H3
@@ -2528,7 +2528,7 @@ CLASS="SCREEN"
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN92402"
+NAME="AEN92450"
 ></A
 ><H3
 >Per-Statement Latencies</H3
@@ -2591,7 +2591,7 @@ statement latencies in milliseconds:
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN92411"
+NAME="AEN92459"
 ></A
 ><H3
 >Good Practices</H3
@@ -2676,6 +2676,30 @@ CLASS="APPLICATION"
 >
    instances concurrently, on several client machines, against the same
    database server.
+  </P
+></DIV
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN92479"
+></A
+><H3
+>Security</H3
+><P
+>    If untrusted users have access to a database that has not adopted a
+    <A
+HREF="ddl-schemas.html#DDL-SCHEMAS-PATTERNS"
+>secure schema usage pattern</A
+>,
+    do not run <SPAN
+CLASS="APPLICATION"
+>pgbench</SPAN
+> in that
+    database.  <SPAN
+CLASS="APPLICATION"
+>pgbench</SPAN
+> uses unqualified names and
+    does not manipulate the search path.
   </P
 ></DIV
 ></DIV

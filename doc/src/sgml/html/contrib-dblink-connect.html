@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
 ><TITLE
@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.11 Documentation"
+TITLE="PostgreSQL 9.5.12 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="dblink"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2018-02-05T21:21:52"></HEAD
+CONTENT="2018-02-27T15:01:55"></HEAD
 ><BODY
 CLASS="REFENTRY"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.11 Documentation</A
+>PostgreSQL 9.5.12 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -95,7 +95,7 @@ NAME="CONTRIB-DBLINK-CONNECT"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN174197"
+NAME="AEN174461"
 ></A
 ><H2
 >Name</H2
@@ -103,7 +103,7 @@ NAME="AEN174197"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN174200"
+NAME="AEN174464"
 ></A
 ><H2
 >Synopsis</H2
@@ -115,7 +115,7 @@ dblink_connect(text connname, text connstr) returns text</PRE
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN174202"
+NAME="AEN174466"
 ></A
 ><H2
 >Description</H2
@@ -158,7 +158,7 @@ HREF="sql-createusermapping.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN174212"
+NAME="AEN174476"
 ></A
 ><H2
 >Arguments</H2
@@ -192,7 +192,7 @@ CLASS="APPLICATION"
        <TT
 CLASS="LITERAL"
 >hostaddr=127.0.0.1 port=5432 dbname=mydb user=postgres
-       password=mypasswd</TT
+       password=mypasswd options=-csearch_path=</TT
 >.
        For details see <A
 HREF="libpq-connect.html#LIBPQ-CONNSTRING"
@@ -207,7 +207,7 @@ HREF="libpq-connect.html#LIBPQ-CONNSTRING"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN174228"
+NAME="AEN174492"
 ></A
 ><H2
 >Return Value</H2
@@ -222,10 +222,35 @@ CLASS="LITERAL"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN174232"
+NAME="AEN174496"
 ></A
 ><H2
 >Notes</H2
+><P
+>    If untrusted users have access to a database that has not adopted a
+    <A
+HREF="ddl-schemas.html#DDL-SCHEMAS-PATTERNS"
+>secure schema usage pattern</A
+>,
+    begin each session by removing publicly-writable schemas from
+    <TT
+CLASS="VARNAME"
+>search_path</TT
+>.  One could, for example,
+    add <TT
+CLASS="LITERAL"
+>options=-csearch_path=</TT
+> to
+    <TT
+CLASS="PARAMETER"
+>connstr</TT
+>.  This consideration is not specific
+    to <TT
+CLASS="FILENAME"
+>dblink</TT
+>; it applies to every interface for
+    executing arbitrary SQL commands.
+   </P
 ><P
 >    Only superusers may use <CODE
 CLASS="FUNCTION"
@@ -249,19 +274,19 @@ CLASS="FILENAME"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN174239"
+NAME="AEN174509"
 ></A
 ><H2
 >Examples</H2
 ><PRE
 CLASS="SCREEN"
->SELECT dblink_connect('dbname=postgres');
+>SELECT dblink_connect('dbname=postgres options=-csearch_path=');
  dblink_connect
 ----------------
  OK
 (1 row)
 
-SELECT dblink_connect('myconn', 'dbname=postgres');
+SELECT dblink_connect('myconn', 'dbname=postgres options=-csearch_path=');
  dblink_connect
 ----------------
  OK

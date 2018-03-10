@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
 ><TITLE
@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.11 Documentation"
+TITLE="PostgreSQL 9.5.12 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="PostgreSQL Client Applications"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2018-02-05T21:21:52"></HEAD
+CONTENT="2018-02-27T15:01:55"></HEAD
 ><BODY
 CLASS="REFENTRY"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.11 Documentation</A
+>PostgreSQL 9.5.12 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -98,7 +98,7 @@ CLASS="APPLICATION"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN94948"
+NAME="AEN95002"
 ></A
 ><H2
 >Name</H2
@@ -113,7 +113,7 @@ CLASS="PRODUCTNAME"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN94953"
+NAME="AEN95007"
 ></A
 ><H2
 >Synopsis</H2
@@ -142,7 +142,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN94962"
+NAME="AEN95016"
 ></A
 ><H2
 >Description</H2
@@ -1274,7 +1274,7 @@ CLASS="APPLICATION"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN95352"
+NAME="AEN95406"
 ></A
 ><H2
 >Exit Status</H2
@@ -1295,7 +1295,7 @@ CLASS="VARNAME"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN95357"
+NAME="AEN95411"
 ></A
 ><H2
 >Usage</H2
@@ -1481,7 +1481,7 @@ CLASS="PROGRAMLISTING"
 CLASS="USERINPUT"
 >psql testdb</KBD
 >
-psql (9.5.11)
+psql (9.5.12)
 Type "help" for help.
 
 testdb=&gt;</PRE
@@ -1497,6 +1497,32 @@ CLASS="ACRONYM"
     terminate a command.  Thus commands can be spread over several lines for
     clarity. If the command was sent and executed without error, the results
     of the command are displayed on the screen.
+    </P
+><P
+>    If untrusted users have access to a database that has not adopted a
+    <A
+HREF="ddl-schemas.html#DDL-SCHEMAS-PATTERNS"
+>secure schema usage pattern</A
+>,
+    begin your session by removing publicly-writable schemas
+    from <TT
+CLASS="VARNAME"
+>search_path</TT
+>.  One can
+    add <TT
+CLASS="LITERAL"
+>options=-csearch_path=</TT
+> to the connection string or
+    issue <TT
+CLASS="LITERAL"
+>SELECT pg_catalog.set_config('search_path', '',
+    false)</TT
+> before other SQL commands.  This consideration is not
+    specific to <SPAN
+CLASS="APPLICATION"
+>psql</SPAN
+>; it applies to every interface
+    for executing arbitrary SQL commands.
     </P
 ><P
 >    Whenever a command is executed, <SPAN
@@ -6058,7 +6084,7 @@ CLASS="LITERAL"
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN96671"
+NAME="AEN96731"
 ></A
 ><H3
 >Advanced Features</H3
@@ -7412,7 +7438,7 @@ CLASS="APPLICATION"
 ><DIV
 CLASS="REFSECT3"
 ><A
-NAME="AEN97077"
+NAME="AEN97137"
 ></A
 ><H4
 >Command-Line Editing</H4
@@ -7704,7 +7730,7 @@ HREF="libpq-envars.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN97177"
+NAME="AEN97237"
 ></A
 ><H2
 >Files</H2
@@ -7852,7 +7878,7 @@ CLASS="ENVAR"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN97218"
+NAME="AEN97278"
 ></A
 ><H2
 >Notes</H2
@@ -7922,7 +7948,7 @@ CLASS="APPLICATION"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN97235"
+NAME="AEN97295"
 ></A
 ><H2
 >Notes for Windows Users</H2

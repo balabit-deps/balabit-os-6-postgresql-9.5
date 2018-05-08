@@ -520,15 +520,17 @@ char *spec_yytext;
 
 static int	yyline = 1;			/* line number for error reporting */
 
-static char litbuf[1024];
-static int litbufpos = 0;
+#define LITBUF_INIT	1024		/* initial size of litbuf */
+static char *litbuf = NULL;
+static size_t litbufsize = 0;
+static size_t litbufpos = 0;
 
 static void addlitchar(char c);
 
 #define YY_NO_INPUT 1
 
 
-#line 532 "specscanner.c"
+#line 534 "specscanner.c"
 
 #define INITIAL 0
 #define sql 1
@@ -746,10 +748,15 @@ YY_DECL
 		}
 
 	{
-#line 40 "specscanner.l"
+#line 42 "specscanner.l"
 
 
-#line 753 "specscanner.c"
+
+	litbuf = pg_malloc(LITBUF_INIT);
+	litbufsize = LITBUF_INIT;
+
+
+#line 760 "specscanner.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -804,49 +811,49 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 42 "specscanner.l"
+#line 49 "specscanner.l"
 { return(PERMUTATION); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 43 "specscanner.l"
+#line 50 "specscanner.l"
 { return(SESSION); }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 44 "specscanner.l"
+#line 51 "specscanner.l"
 { return(SETUP); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 45 "specscanner.l"
+#line 52 "specscanner.l"
 { return(STEP); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 46 "specscanner.l"
+#line 53 "specscanner.l"
 { return(TEARDOWN); }
 	YY_BREAK
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 48 "specscanner.l"
+#line 55 "specscanner.l"
 { yyline++; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 49 "specscanner.l"
+#line 56 "specscanner.l"
 { /* ignore */ }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 50 "specscanner.l"
+#line 57 "specscanner.l"
 { /* ignore */ }
 	YY_BREAK
 /* Quoted strings: "foo" */
 case 9:
 YY_RULE_SETUP
-#line 53 "specscanner.l"
+#line 60 "specscanner.l"
 {
 					litbufpos = 0;
 					BEGIN(qstr);
@@ -854,7 +861,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 57 "specscanner.l"
+#line 64 "specscanner.l"
 {
 					litbuf[litbufpos] = '\0';
 					yylval.str = strdup(litbuf);
@@ -864,23 +871,23 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 63 "specscanner.l"
+#line 70 "specscanner.l"
 { addlitchar(spec_yytext[0]); }
 	YY_BREAK
 case 12:
 /* rule 12 can match eol */
 YY_RULE_SETUP
-#line 64 "specscanner.l"
+#line 71 "specscanner.l"
 { yyerror("unexpected newline in quoted string"); }
 	YY_BREAK
 case YY_STATE_EOF(qstr):
-#line 65 "specscanner.l"
+#line 72 "specscanner.l"
 { yyerror("unterminated quoted string"); }
 	YY_BREAK
 /* SQL blocks: { UPDATE ... } */
 case 13:
 YY_RULE_SETUP
-#line 68 "specscanner.l"
+#line 75 "specscanner.l"
 {
 
 					litbufpos = 0;
@@ -889,7 +896,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 73 "specscanner.l"
+#line 80 "specscanner.l"
 {
 					litbuf[litbufpos] = '\0';
 					yylval.str = strdup(litbuf);
@@ -899,7 +906,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 79 "specscanner.l"
+#line 86 "specscanner.l"
 {
 					addlitchar(spec_yytext[0]);
 				}
@@ -907,21 +914,21 @@ YY_RULE_SETUP
 case 16:
 /* rule 16 can match eol */
 YY_RULE_SETUP
-#line 82 "specscanner.l"
+#line 89 "specscanner.l"
 {
 					yyline++;
 					addlitchar(spec_yytext[0]);
 				}
 	YY_BREAK
 case YY_STATE_EOF(sql):
-#line 86 "specscanner.l"
+#line 93 "specscanner.l"
 {
 					yyerror("unterminated sql block");
 				}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 90 "specscanner.l"
+#line 97 "specscanner.l"
 {
 					fprintf(stderr, "syntax error at line %d: unexpected character \"%s\"\n", yyline, spec_yytext);
 					exit(1);
@@ -929,10 +936,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 94 "specscanner.l"
+#line 101 "specscanner.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 936 "specscanner.c"
+#line 943 "specscanner.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1897,17 +1904,19 @@ void spec_yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 94 "specscanner.l"
+#line 101 "specscanner.l"
 
 
 
 static void
 addlitchar(char c)
 {
-	if (litbufpos >= sizeof(litbuf) - 1)
+	/* We must always leave room to add a trailing \0 */
+	if (litbufpos >= litbufsize - 1)
 	{
-		fprintf(stderr, "SQL step too long\n");
-		exit(1);
+		/* Double the size of litbuf if it gets full */
+		litbufsize += litbufsize;
+		litbuf = pg_realloc(litbuf, litbufsize);
 	}
 	litbuf[litbufpos++] = c;
 }

@@ -1,3 +1,15 @@
+postgresql-9.5 (9.5.13-0ubuntu0.16.04) xenial; urgency=medium
+
+  * New upstream release (LP: #1769888)
+    - A dump/restore is not required for those running 9.5.X.
+      However, if the function marking mistakes mentioned in the first
+      changelog entry affect you, you will want to take steps to
+      correct your database catalogs.
+    - Details about changes can be found at
+      https://www.postgresql.org/docs/9.5/static/release-9-5-13.html
+
+ -- Christian Ehrhardt <christian.ehrhardt@canonical.com>  Tue, 08 May 2018 15:17:49 +0200
+
 postgresql-9.5 (9.5.12-0ubuntu0.16.04) xenial-security; urgency=medium
 
   * New upstream release (LP: #1752271)

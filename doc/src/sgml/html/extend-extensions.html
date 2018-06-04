@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.12 Documentation"
+TITLE="PostgreSQL 9.5.13 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="Extending SQL"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2018-02-27T15:01:55"></HEAD
+CONTENT="2018-05-07T21:11:49"></HEAD
 ><BODY
 CLASS="SECT1"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.12 Documentation</A
+>PostgreSQL 9.5.13 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -288,7 +288,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN59315"
+NAME="AEN59343"
 >35.15.2. Extension Files</A
 ></H2
 ><P
@@ -686,7 +686,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN59433"
+NAME="AEN59461"
 >35.15.3. Extension Relocatability</A
 ></H2
 ><P
@@ -862,7 +862,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN59474"
+NAME="AEN59502"
 >35.15.4. Extension Configuration Tables</A
 ></H2
 ><P
@@ -966,7 +966,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN59496"
+NAME="AEN59524"
 >35.15.5. Extension Updates</A
 ></H2
 ><P
@@ -1219,7 +1219,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN59551"
+NAME="AEN59579"
 >35.15.6. Extension Example</A
 ></H2
 ><P
@@ -1248,13 +1248,12 @@ CLASS="PROGRAMLISTING"
 >-- complain if script is sourced in psql, rather than via CREATE EXTENSION
 \echo Use "CREATE EXTENSION pair" to load this file. \quit
 
-CREATE TYPE pair AS ( k pg_catalog.text, v pg_catalog.text );
+CREATE TYPE pair AS ( k text, v text );
 
-CREATE OR REPLACE FUNCTION pair(pg_catalog.text, pg_catalog.text)
+CREATE OR REPLACE FUNCTION pair(text, text)
 RETURNS pair LANGUAGE SQL AS 'SELECT ROW($1, $2)::@extschema@.pair;';
 
-CREATE OPERATOR ~&#62; (LEFTARG = pg_catalog.text,
-                    RIGHTARG = pg_catalog.text, PROCEDURE = pair);
+CREATE OPERATOR ~&#62; (LEFTARG = text, RIGHTARG = text, PROCEDURE = pair);
 
 -- "SET search_path" is easy to get right, but qualified names perform better.
 CREATE OR REPLACE FUNCTION lower(pair)

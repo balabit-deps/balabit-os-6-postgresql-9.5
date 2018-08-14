@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.13 Documentation"
+TITLE="PostgreSQL 9.5.14 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="PostgreSQL Server Applications"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2018-05-07T21:11:49"></HEAD
+CONTENT="2018-08-06T20:29:23"></HEAD
 ><BODY
 CLASS="REFENTRY"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.13 Documentation</A
+>PostgreSQL 9.5.14 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -98,7 +98,7 @@ CLASS="APPLICATION"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN99059"
+NAME="AEN99093"
 ></A
 ><H2
 >Name</H2
@@ -109,7 +109,7 @@ CLASS="PRODUCTNAME"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN99063"
+NAME="AEN99097"
 ></A
 ><H2
 >Synopsis</H2
@@ -154,7 +154,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN99082"
+NAME="AEN99116"
 ></A
 ><H2
 >Description</H2
@@ -256,11 +256,58 @@ HREF="runtime-config-wal.html#GUC-FULL-PAGE-WRITES"
 > must also be enabled.  That is the
    default.
   </P
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>    If <SPAN
+CLASS="APPLICATION"
+>pg_rewind</SPAN
+> fails while processing, then
+    the data folder of the target is likely not in a state that can be
+    recovered.  In such a case, taking a new fresh backup is recommended.
+   </P
+><P
+>    <SPAN
+CLASS="APPLICATION"
+>pg_rewind</SPAN
+> will fail immediately if it finds
+    files it cannot write directly to.  This can happen for example when
+    the source and the target server use the same file mapping for read-only
+    SSL keys and certificates.  If such files are present on the target server
+    it is recommended to remove them before running
+    <SPAN
+CLASS="APPLICATION"
+>pg_rewind</SPAN
+>.  After doing the rewind, some of
+    those files may have been copied from the source, in which case it may
+    be necessary to remove the data copied and restore back the set of links
+    used before the rewind.
+   </P
+></TD
+></TR
+></TABLE
+></DIV
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN99106"
+NAME="AEN99146"
 ></A
 ><H2
 >Options</H2
@@ -419,7 +466,7 @@ CLASS="OPTION"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN99169"
+NAME="AEN99209"
 ></A
 ><H2
 >Environment</H2
@@ -444,14 +491,14 @@ HREF="libpq-envars.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN99176"
+NAME="AEN99216"
 ></A
 ><H2
 >Notes</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN99178"
+NAME="AEN99218"
 ></A
 ><H3
 >How it works</H3

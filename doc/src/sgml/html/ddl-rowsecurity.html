@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.13 Documentation"
+TITLE="PostgreSQL 9.5.14 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="Data Definition"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2018-05-07T21:11:49"></HEAD
+CONTENT="2018-08-06T20:29:23"></HEAD
 ><BODY
 CLASS="SECT1"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.13 Documentation</A
+>PostgreSQL 9.5.14 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -253,12 +253,43 @@ ALTER TABLE accounts ENABLE ROW LEVEL SECURITY;
 CREATE POLICY account_managers ON accounts TO managers
     USING (manager = current_user);</PRE
 ><P
+>   The policy above implicitly provides a <TT
+CLASS="LITERAL"
+>WITH CHECK</TT
+>
+   clause identical to its <TT
+CLASS="LITERAL"
+>USING</TT
+> clause, so that the
+   constraint applies both to rows selected by a command (so a manager
+   cannot <TT
+CLASS="COMMAND"
+>SELECT</TT
+>, <TT
+CLASS="COMMAND"
+>UPDATE</TT
+>,
+   or <TT
+CLASS="COMMAND"
+>DELETE</TT
+> existing rows belonging to a different
+   manager) and to rows modified by a command (so rows belonging to a
+   different manager cannot be created via <TT
+CLASS="COMMAND"
+>INSERT</TT
+>
+   or <TT
+CLASS="COMMAND"
+>UPDATE</TT
+>).
+  </P
+><P
 >   If no role is specified, or the special user name
    <TT
 CLASS="LITERAL"
 >PUBLIC</TT
 > is used, then the policy applies to all
-   users on the system.  To allow all users to access their own row in
+   users on the system.  To allow all users to access only their own row in
    a <TT
 CLASS="LITERAL"
 >users</TT
@@ -269,12 +300,12 @@ CLASS="PROGRAMLISTING"
 >CREATE POLICY user_policy ON users
     USING (user_name = current_user);</PRE
 ><P
+>   This works similarly to the previous example.
+  </P
+><P
 >   To use a different policy for rows that are being added to the table
-   compared to those rows that are visible, the <TT
-CLASS="LITERAL"
->WITH CHECK</TT
->
-   clause can be used.  This policy would allow all users to view all rows
+   compared to those rows that are visible, multiple policies can be
+   combined.  This pair of policies would allow all users to view all rows
    in the <TT
 CLASS="LITERAL"
 >users</TT
@@ -282,9 +313,23 @@ CLASS="LITERAL"
   </P
 ><PRE
 CLASS="PROGRAMLISTING"
->CREATE POLICY user_policy ON users
-    USING (true)
-    WITH CHECK (user_name = current_user);</PRE
+>CREATE POLICY user_sel_policy ON users
+    FOR SELECT
+    USING (true);
+CREATE POLICY user_mod_policy ON users
+    USING (user_name = current_user);</PRE
+><P
+>   In a <TT
+CLASS="COMMAND"
+>SELECT</TT
+> command, these two policies are combined
+   using <TT
+CLASS="LITERAL"
+>OR</TT
+>, with the net effect being that all rows
+   can be selected.  In other command types, only the second policy applies,
+   so that the effects are the same as before.
+  </P
 ><P
 >   Row security can also be disabled with the <TT
 CLASS="COMMAND"

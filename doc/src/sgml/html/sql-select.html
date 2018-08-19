@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.13 Documentation"
+TITLE="PostgreSQL 9.5.14 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="SQL Commands"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2018-05-07T21:11:49"></HEAD
+CONTENT="2018-08-06T20:29:23"></HEAD
 ><BODY
 CLASS="REFENTRY"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.13 Documentation</A
+>PostgreSQL 9.5.14 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -95,7 +95,7 @@ NAME="SQL-SELECT"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN87121"
+NAME="AEN87154"
 ></A
 ><H2
 >Name</H2
@@ -103,7 +103,7 @@ NAME="AEN87121"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN87126"
+NAME="AEN87159"
 ></A
 ><H2
 >Synopsis</H2
@@ -514,7 +514,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN87199"
+NAME="AEN87232"
 ></A
 ><H2
 >Description</H2
@@ -870,7 +870,7 @@ CLASS="LITERAL"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN87283"
+NAME="AEN87316"
 ></A
 ><H2
 >Parameters</H2
@@ -3746,19 +3746,25 @@ CLASS="REPLACEABLE"
 ></TT
 > ] { ROW | ROWS } ONLY</PRE
 ><P>
-    In this syntax, to write anything except a simple integer constant for
-    <TT
+    In this syntax, the <TT
 CLASS="REPLACEABLE"
 ><I
 >start</I
 ></TT
-> or <TT
+>
+    or <TT
 CLASS="REPLACEABLE"
 ><I
 >count</I
 ></TT
->, you must write parentheses
-    around it.
+> value is required by
+    the standard to be a literal constant, a parameter, or a variable name;
+    as a <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> extension, other expressions
+    are allowed, but will generally need to be enclosed in parentheses to avoid
+    ambiguity.
     If <TT
 CLASS="REPLACEABLE"
 ><I
@@ -4275,7 +4281,7 @@ CLASS="LITERAL"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN88104"
+NAME="AEN88138"
 ></A
 ><H2
 >Examples</H2
@@ -4568,7 +4574,7 @@ FROM manufacturers m LEFT JOIN LATERAL get_product_names(m.id) pname ON true;</P
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN88146"
+NAME="AEN88180"
 ></A
 ><H2
 >Compatibility</H2
@@ -4583,7 +4589,7 @@ CLASS="COMMAND"
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN88150"
+NAME="AEN88184"
 ></A
 ><H3
 >Omitted <TT
@@ -4644,7 +4650,7 @@ CLASS="LITERAL"
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN88164"
+NAME="AEN88198"
 ></A
 ><H3
 >Empty <TT
@@ -4672,7 +4678,7 @@ CLASS="LITERAL"
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN88171"
+NAME="AEN88205"
 ></A
 ><H3
 >Omitting the <TT
@@ -4721,7 +4727,7 @@ CLASS="LITERAL"
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN88183"
+NAME="AEN88217"
 ></A
 ><H3
 ><TT
@@ -4768,7 +4774,7 @@ CLASS="LITERAL"
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN88196"
+NAME="AEN88230"
 ></A
 ><H3
 ><TT
@@ -4790,7 +4796,7 @@ CLASS="LITERAL"
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN88202"
+NAME="AEN88236"
 ></A
 ><H3
 >Function Calls in <TT
@@ -4868,7 +4874,7 @@ CLASS="LITERAL"
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN88221"
+NAME="AEN88255"
 ></A
 ><H3
 >Namespace Available to <TT
@@ -4922,7 +4928,7 @@ CLASS="LITERAL"
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN88234"
+NAME="AEN88268"
 ></A
 ><H3
 >Functional Dependencies</H3
@@ -4946,7 +4952,7 @@ CLASS="LITERAL"
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN88240"
+NAME="AEN88274"
 ></A
 ><H3
 ><TT
@@ -4971,7 +4977,7 @@ CLASS="PRODUCTNAME"
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN88246"
+NAME="AEN88280"
 ></A
 ><H3
 ><TT
@@ -5029,7 +5035,7 @@ CLASS="LITERAL"
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN88260"
+NAME="AEN88294"
 ></A
 ><H3
 ><TT
@@ -5089,7 +5095,7 @@ CLASS="LITERAL"
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN88277"
+NAME="AEN88311"
 ></A
 ><H3
 >Data-Modifying Statements in <TT
@@ -5120,7 +5126,7 @@ CLASS="LITERAL"
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN88286"
+NAME="AEN88320"
 ></A
 ><H3
 >Nonstandard Clauses</H3

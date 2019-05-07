@@ -651,10 +651,22 @@ raw_heap_insert(RewriteState state, HeapTuple tup)
 		heaptup = tup;
 	}
 	else if (HeapTupleHasExternal(tup) || tup->t_len > TOAST_TUPLE_THRESHOLD)
+	{
+		int options = HEAP_INSERT_SKIP_FSM;
+
+		if (!state->rs_use_wal)
+			options |= HEAP_INSERT_SKIP_WAL;
+
+		/*
+		 * While rewriting the heap for VACUUM FULL / CLUSTER, make sure data
+		 * for the TOAST table are not logically decoded.  The main heap is
+		 * WAL-logged as XLOG FPI records, which are not logically decoded.
+		 */
+		options |= HEAP_INSERT_NO_LOGICAL;
+
 		heaptup = toast_insert_or_update(state->rs_new_rel, tup, NULL,
-										 HEAP_INSERT_SKIP_FSM |
-										 (state->rs_use_wal ?
-										  0 : HEAP_INSERT_SKIP_WAL));
+										 options);
+	}
 	else
 		heaptup = tup;
 
@@ -963,7 +975,7 @@ logical_end_heap_rewrite(RewriteState state)
 	while ((src = (RewriteMappingFile *) hash_seq_search(&seq_status)) != NULL)
 	{
 		if (FileSync(src->vfd) != 0)
-			ereport(ERROR,
+			ereport(data_sync_elevel(ERROR),
 					(errcode_for_file_access(),
 					 errmsg("could not fsync file \"%s\": %m", src->path)));
 		FileClose(src->vfd);
@@ -1181,7 +1193,7 @@ heap_xlog_logical_rewrite(XLogReaderState *r)
 	 * doesn't seem worth the trouble.
 	 */
 	if (pg_fsync(fd) != 0)
-		ereport(ERROR,
+		ereport(data_sync_elevel(ERROR),
 				(errcode_for_file_access(),
 				 errmsg("could not fsync file \"%s\": %m", path)));
 
@@ -1278,7 +1290,7 @@ CheckPointLogicalRewriteHeap(void)
 			 * but it's currently not deemed worth the effort.
 			 */
 			else if (pg_fsync(fd) != 0)
-				ereport(ERROR,
+				ereport(data_sync_elevel(ERROR),
 						(errcode_for_file_access(),
 						 errmsg("could not fsync file \"%s\": %m", path)));
 			CloseTransientFile(fd);

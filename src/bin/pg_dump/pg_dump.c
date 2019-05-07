@@ -3049,8 +3049,8 @@ getPolicies(Archive *fout, TableInfo tblinfo[], int numTables)
 
 		/*
 		 * Get row security enabled information for the table. We represent
-		 * RLS enabled on a table by creating PolicyInfo object with an empty
-		 * policy.
+		 * RLS being enabled on a table by creating a PolicyInfo object with
+		 * null polname.
 		 */
 		if (tbinfo->rowsec)
 		{
@@ -3172,8 +3172,13 @@ dumpPolicy(Archive *fout, PolicyInfo *polinfo)
 		query = createPQExpBuffer();
 
 		appendPQExpBuffer(query, "ALTER TABLE %s ENABLE ROW LEVEL SECURITY;",
-						  fmtQualifiedDumpable(polinfo));
+						  fmtQualifiedDumpable(tbinfo));
 
+		/*
+		 * We must emit the ROW SECURITY object's dependency on its table
+		 * explicitly, because it will not match anything in pg_depend (unlike
+		 * the case for other PolicyInfo objects).
+		 */
 		ArchiveEntry(fout, polinfo->dobj.catId, polinfo->dobj.dumpId,
 					 polinfo->dobj.name,
 					 polinfo->dobj.namespace->dobj.name,
@@ -3181,7 +3186,7 @@ dumpPolicy(Archive *fout, PolicyInfo *polinfo)
 					 tbinfo->rolname, false,
 					 "ROW SECURITY", SECTION_POST_DATA,
 					 query->data, "", NULL,
-					 NULL, 0,
+					 &(tbinfo->dobj.dumpId), 1,
 					 NULL, NULL);
 
 		destroyPQExpBuffer(query);
@@ -15390,6 +15395,10 @@ dumpEventTrigger(Archive *fout, EventTriggerInfo *evtinfo)
 
 	appendPQExpBuffer(delqry, "DROP EVENT TRIGGER %s;\n",
 					  qevtname);
+
+	if (dopt->binary_upgrade)
+		binary_upgrade_extension_member(query, &evtinfo->dobj,
+										"EVENT TRIGGER", qevtname, NULL);
 
 	ArchiveEntry(fout, evtinfo->dobj.catId, evtinfo->dobj.dumpId,
 				 evtinfo->dobj.name, NULL, NULL,

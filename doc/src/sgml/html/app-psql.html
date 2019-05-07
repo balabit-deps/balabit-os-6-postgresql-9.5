@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.14 Documentation"
+TITLE="PostgreSQL 9.5.17 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="PostgreSQL Client Applications"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2018-08-06T20:29:23"></HEAD
+CONTENT="2019-05-06T21:03:54"></HEAD
 ><BODY
 CLASS="REFENTRY"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.14 Documentation</A
+>PostgreSQL 9.5.17 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -98,7 +98,7 @@ CLASS="APPLICATION"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN95068"
+NAME="AEN95158"
 ></A
 ><H2
 >Name</H2
@@ -113,7 +113,7 @@ CLASS="PRODUCTNAME"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN95073"
+NAME="AEN95163"
 ></A
 ><H2
 >Synopsis</H2
@@ -142,7 +142,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN95082"
+NAME="AEN95172"
 ></A
 ><H2
 >Description</H2
@@ -1274,7 +1274,7 @@ CLASS="APPLICATION"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN95472"
+NAME="AEN95562"
 ></A
 ><H2
 >Exit Status</H2
@@ -1295,7 +1295,7 @@ CLASS="VARNAME"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN95477"
+NAME="AEN95567"
 ></A
 ><H2
 >Usage</H2
@@ -1481,7 +1481,7 @@ CLASS="PROGRAMLISTING"
 CLASS="USERINPUT"
 >psql testdb</KBD
 >
-psql (9.5.14)
+psql (9.5.17)
 Type "help" for help.
 
 testdb=&gt;</PRE
@@ -2118,19 +2118,66 @@ CLASS="TIP"
 ><P
 ><B
 >Tip: </B
->        This operation is not as efficient as the <ACRONYM
+>        Another way to obtain the same result as <TT
+CLASS="LITERAL"
+>\copy
+        ... to</TT
+> is to use the <ACRONYM
+CLASS="ACRONYM"
+>SQL</ACRONYM
+> <TT
+CLASS="LITERAL"
+>COPY
+        ... TO STDOUT</TT
+> command and terminate it
+        with <TT
+CLASS="LITERAL"
+>\g <TT
+CLASS="REPLACEABLE"
+><I
+>filename</I
+></TT
+></TT
+>
+        or <TT
+CLASS="LITERAL"
+>\g |<TT
+CLASS="REPLACEABLE"
+><I
+>program</I
+></TT
+></TT
+>.
+        Unlike <TT
+CLASS="LITERAL"
+>\copy</TT
+>, this method allows the command to
+        span multiple lines; also, variable interpolation and backquote
+        expansion can be used.
+        </P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="TIP"
+><BLOCKQUOTE
+CLASS="TIP"
+><P
+><B
+>Tip: </B
+>        These operations are not as efficient as the <ACRONYM
 CLASS="ACRONYM"
 >SQL</ACRONYM
 >
         <TT
 CLASS="COMMAND"
 >COPY</TT
-> command because all data must pass
-        through the client/server connection. For large
-        amounts of data the <ACRONYM
+> command with a file or program data source or
+        destination, because all data must pass through the client/server
+        connection.  For large amounts of data the <ACRONYM
 CLASS="ACRONYM"
 >SQL</ACRONYM
-> command might be preferable.
+>
+        command might be preferable.
         </P
 ></BLOCKQUOTE
 ></DIV
@@ -4708,8 +4755,7 @@ CLASS="LITERAL"
 CLASS="LITERAL"
 >troff-ms</TT
 >.
-          Unique abbreviations are allowed.  (That would mean one letter
-          is enough.)
+          Unique abbreviations are allowed.
           </P
 ><P
 ><TT
@@ -6084,7 +6130,7 @@ CLASS="LITERAL"
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN96797"
+NAME="AEN96897"
 ></A
 ><H3
 >Advanced Features</H3
@@ -7438,7 +7484,7 @@ CLASS="APPLICATION"
 ><DIV
 CLASS="REFSECT3"
 ><A
-NAME="AEN97203"
+NAME="AEN97303"
 ></A
 ><H4
 >Command-Line Editing</H4
@@ -7730,7 +7776,7 @@ HREF="libpq-envars.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN97303"
+NAME="AEN97403"
 ></A
 ><H2
 >Files</H2
@@ -7878,7 +7924,7 @@ CLASS="ENVAR"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN97344"
+NAME="AEN97444"
 ></A
 ><H2
 >Notes</H2
@@ -7948,7 +7994,7 @@ CLASS="APPLICATION"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN97361"
+NAME="AEN97461"
 ></A
 ><H2
 >Notes for Windows Users</H2

@@ -1327,15 +1327,19 @@ ReorderBufferBuildTupleCidHash(ReorderBuffer *rb, ReorderBufferTXN *txn)
 		}
 		else
 		{
+			/*
+			 * Maybe we already saw this tuple before in this transaction,
+			 * but if so it must have the same cmin.
+			 */
 			Assert(ent->cmin == change->data.tuplecid.cmin);
-			Assert(ent->cmax == InvalidCommandId ||
-				   ent->cmax == change->data.tuplecid.cmax);
 
 			/*
-			 * if the tuple got valid in this transaction and now got deleted
-			 * we already have a valid cmin stored. The cmax will be
-			 * InvalidCommandId though.
+			 * cmax may be initially invalid, but once set it can only grow,
+			 * and never become invalid again.
 			 */
+			Assert((ent->cmax == InvalidCommandId) ||
+				   ((change->data.tuplecid.cmax != InvalidCommandId) &&
+					(change->data.tuplecid.cmax > ent->cmax)));
 			ent->cmax = change->data.tuplecid.cmax;
 		}
 	}
@@ -1528,8 +1532,16 @@ ReorderBufferCommit(ReorderBuffer *rb, TransactionId xid,
 											change->data.tp.relnode.relNode);
 
 					/*
-					 * Catalog tuple without data, emitted while catalog was
-					 * in the process of being rewritten.
+					 * Mapped catalog tuple without data, emitted while
+					 * catalog table was in the process of being rewritten. We
+					 * can fail to look up the relfilenode, because the the
+					 * relmapper has no "historic" view, in contrast to normal
+					 * the normal catalog during decoding. Thus repeated
+					 * rewrites can cause a lookup failure. That's OK because
+					 * we do not decode catalog changes anyway. Normally such
+					 * tuples would be skipped over below, but we can't
+					 * identify whether the table should be logically logged
+					 * without mapping the relfilenode to the oid.
 					 */
 					if (reloid == InvalidOid &&
 						change->data.tp.newtuple == NULL &&
@@ -1585,6 +1597,8 @@ ReorderBufferCommit(ReorderBuffer *rb, TransactionId xid,
 						 * freed/reused while restoring spooled data from
 						 * disk.
 						 */
+						Assert(change->data.tp.newtuple != NULL);
+
 						dlist_delete(&change->node);
 						ReorderBufferToastAppendChunk(rb, txn, relation,
 													  change);
@@ -3194,11 +3208,13 @@ ApplyLogicalMappingFile(HTAB *tuplecid_data, Oid relid, const char *fname)
 			new_ent->combocid = ent->combocid;
 		}
 	}
+
+	CloseTransientFile(fd);
 }
 
 
 /*
- * Check whether the TransactionOId 'xid' is in the pre-sorted array 'xip'.
+ * Check whether the TransactionOid 'xid' is in the pre-sorted array 'xip'.
  */
 static bool
 TransactionIdInArray(TransactionId xid, TransactionId *xip, Size num)

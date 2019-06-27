@@ -45,6 +45,7 @@
 #include "catalog/pg_type.h"
 #include "catalog/storage.h"
 #include "commands/tablecmds.h"
+#include "commands/event_trigger.h"
 #include "commands/trigger.h"
 #include "executor/executor.h"
 #include "miscadmin.h"
@@ -186,7 +187,8 @@ relationHasPrimaryKey(Relation rel)
 void
 index_check_primary_key(Relation heapRel,
 						IndexInfo *indexInfo,
-						bool is_alter_table)
+						bool is_alter_table,
+						IndexStmt *stmt)
 {
 	List	   *cmds;
 	int			i;
@@ -258,7 +260,11 @@ index_check_primary_key(Relation heapRel,
 	 * unduly.
 	 */
 	if (cmds)
+	{
+		EventTriggerAlterTableStart((Node *) stmt);
 		AlterTableInternal(RelationGetRelid(heapRel), cmds, false);
+		EventTriggerAlterTableEnd();
+	}
 }
 
 /*
@@ -3284,26 +3290,27 @@ reindex_index(Oid indexId, bool skip_constraint_checks, char persistence,
 	 */
 	TransferPredicateLocksToHeapRelation(iRel);
 
+	/* Fetch info needed for index_build */
+	indexInfo = BuildIndexInfo(iRel);
+
+	/* If requested, skip checking uniqueness/exclusion constraints */
+	if (skip_constraint_checks)
+	{
+		if (indexInfo->ii_Unique || indexInfo->ii_ExclusionOps != NULL)
+			skipped_constraint = true;
+		indexInfo->ii_Unique = false;
+		indexInfo->ii_ExclusionOps = NULL;
+		indexInfo->ii_ExclusionProcs = NULL;
+		indexInfo->ii_ExclusionStrats = NULL;
+	}
+
+	/* ensure SetReindexProcessing state isn't leaked */
 	PG_TRY();
 	{
 		/* Suppress use of the target index while rebuilding it */
 		SetReindexProcessing(heapId, indexId);
 
-		/* Fetch info needed for index_build */
-		indexInfo = BuildIndexInfo(iRel);
-
-		/* If requested, skip checking uniqueness/exclusion constraints */
-		if (skip_constraint_checks)
-		{
-			if (indexInfo->ii_Unique || indexInfo->ii_ExclusionOps != NULL)
-				skipped_constraint = true;
-			indexInfo->ii_Unique = false;
-			indexInfo->ii_ExclusionOps = NULL;
-			indexInfo->ii_ExclusionProcs = NULL;
-			indexInfo->ii_ExclusionStrats = NULL;
-		}
-
-		/* We'll build a new physical relation for the index */
+		/* Create a new physical relation for the index */
 		RelationSetNewRelfilenode(iRel, persistence, InvalidTransactionId,
 								  InvalidMultiXactId);
 
@@ -3446,7 +3453,6 @@ reindex_relation(Oid relid, int flags, int options)
 	Relation	rel;
 	Oid			toast_relid;
 	List	   *indexIds;
-	bool		is_pg_class;
 	bool		result;
 
 	/*
@@ -3465,37 +3471,8 @@ reindex_relation(Oid relid, int flags, int options)
 	 */
 	indexIds = RelationGetIndexList(rel);
 
-	/*
-	 * reindex_index will attempt to update the pg_class rows for the relation
-	 * and index.  If we are processing pg_class itself, we want to make sure
-	 * that the updates do not try to insert index entries into indexes we
-	 * have not processed yet.  (When we are trying to recover from corrupted
-	 * indexes, that could easily cause a crash.) We can accomplish this
-	 * because CatalogUpdateIndexes will use the relcache's index list to know
-	 * which indexes to update. We just force the index list to be only the
-	 * stuff we've processed.
-	 *
-	 * It is okay to not insert entries into the indexes we have not processed
-	 * yet because all of this is transaction-safe.  If we fail partway
-	 * through, the updated rows are dead and it doesn't matter whether they
-	 * have index entries.  Also, a new pg_class index will be created with a
-	 * correct entry for its own pg_class row because we do
-	 * RelationSetNewRelfilenode() before we do index_build().
-	 *
-	 * Note that we also clear pg_class's rd_oidindex until the loop is done,
-	 * so that that index can't be accessed either.  This means we cannot
-	 * safely generate new relation OIDs while in the loop; shouldn't be a
-	 * problem.
-	 */
-	is_pg_class = (RelationGetRelid(rel) == RelationRelationId);
-
-	/* Ensure rd_indexattr is valid; see comments for RelationSetIndexList */
-	if (is_pg_class)
-		(void) RelationGetIndexAttrBitmap(rel, INDEX_ATTR_BITMAP_ALL);
-
 	PG_TRY();
 	{
-		List	   *doneIndexes;
 		ListCell   *indexId;
 		char		persistence;
 
@@ -3523,13 +3500,9 @@ reindex_relation(Oid relid, int flags, int options)
 			persistence = rel->rd_rel->relpersistence;
 
 		/* Reindex all the indexes. */
-		doneIndexes = NIL;
 		foreach(indexId, indexIds)
 		{
 			Oid			indexOid = lfirst_oid(indexId);
-
-			if (is_pg_class)
-				RelationSetIndexList(rel, doneIndexes, InvalidOid);
 
 			reindex_index(indexOid, !(flags & REINDEX_REL_CHECK_CONSTRAINTS),
 						  persistence, options);
@@ -3538,9 +3511,6 @@ reindex_relation(Oid relid, int flags, int options)
 
 			/* Index should no longer be in the pending list */
 			Assert(!ReindexIsProcessingIndex(indexOid));
-
-			if (is_pg_class)
-				doneIndexes = lappend_oid(doneIndexes, indexOid);
 		}
 	}
 	PG_CATCH();
@@ -3551,9 +3521,6 @@ reindex_relation(Oid relid, int flags, int options)
 	}
 	PG_END_TRY();
 	ResetReindexPending();
-
-	if (is_pg_class)
-		RelationSetIndexList(rel, indexIds, ClassOidIndexId);
 
 	/*
 	 * Close rel, but continue to hold the lock.

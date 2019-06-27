@@ -3691,6 +3691,14 @@ static void escape_variable(bool as_ident);
  */
 /* Assorted special-case operators and operator-like tokens */
 /*
+ * These operator-like tokens (unlike the above ones) also match the {operator}
+ * rule, which means that they might be overridden by a longer match if they
+ * are followed by a comment start or a + or - character. Accordingly, if you
+ * add to this list, you must also add corresponding code to the {operator}
+ * block to return the correct token in such cases. (This is not needed in
+ * psqlscan.l since the token value is ignored there.)
+ */
+/*
  * "self" is the set of chars that should be returned as single-character
  * tokens.  "op_chars" is the set of chars that can make up "Op" tokens,
  * which can be one or more characters long (but if a single-char token
@@ -3722,7 +3730,7 @@ static void escape_variable(bool as_ident);
  * Note that xcstart must appear before operator, as explained above!
  *  Also whitespace (comment) must appear before operator.
  */
-#line 3726 "psqlscan.c"
+#line 3734 "psqlscan.c"
 
 #define INITIAL 0
 #define xb 1
@@ -3957,10 +3965,10 @@ YY_DECL
 		}
 
 	{
-#line 417 "psqlscan.l"
+#line 426 "psqlscan.l"
 
 
-#line 3964 "psqlscan.c"
+#line 3972 "psqlscan.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -3993,7 +4001,7 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 419 "psqlscan.l"
+#line 428 "psqlscan.l"
 {
 					/*
 					 * Note that the whitespace rule includes both true
@@ -4009,7 +4017,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 432 "psqlscan.l"
+#line 441 "psqlscan.l"
 {
 					cur_state->xcdepth = 0;
 					BEGIN(xc);
@@ -4020,7 +4028,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 440 "psqlscan.l"
+#line 449 "psqlscan.l"
 {
 					cur_state->xcdepth++;
 					/* Put back any characters past slash-star; see above */
@@ -4030,7 +4038,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 447 "psqlscan.l"
+#line 456 "psqlscan.l"
 {
 					if (cur_state->xcdepth <= 0)
 					{
@@ -4044,28 +4052,28 @@ YY_RULE_SETUP
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
-#line 457 "psqlscan.l"
+#line 466 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 461 "psqlscan.l"
+#line 470 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 465 "psqlscan.l"
+#line 474 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 469 "psqlscan.l"
+#line 478 "psqlscan.l"
 {
 					BEGIN(xb);
 					ECHO;
@@ -4073,11 +4081,11 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 /* rule 9 can match eol */
-#line 474 "psqlscan.l"
+#line 483 "psqlscan.l"
 case 10:
 /* rule 10 can match eol */
 YY_RULE_SETUP
-#line 474 "psqlscan.l"
+#line 483 "psqlscan.l"
 {
 					yyless(1);
 					BEGIN(INITIAL);
@@ -4086,29 +4094,29 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 /* rule 11 can match eol */
-#line 480 "psqlscan.l"
+#line 489 "psqlscan.l"
 case 12:
 /* rule 12 can match eol */
 YY_RULE_SETUP
-#line 480 "psqlscan.l"
+#line 489 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 13:
 /* rule 13 can match eol */
-#line 484 "psqlscan.l"
+#line 493 "psqlscan.l"
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-#line 484 "psqlscan.l"
+#line 493 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 488 "psqlscan.l"
+#line 497 "psqlscan.l"
 {
 					/* Hexadecimal bit type.
 					 * At some point we should simply pass the string
@@ -4122,11 +4130,11 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 /* rule 16 can match eol */
-#line 499 "psqlscan.l"
+#line 508 "psqlscan.l"
 case 17:
 /* rule 17 can match eol */
 YY_RULE_SETUP
-#line 499 "psqlscan.l"
+#line 508 "psqlscan.l"
 {
 					yyless(1);
 					BEGIN(INITIAL);
@@ -4135,7 +4143,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 505 "psqlscan.l"
+#line 514 "psqlscan.l"
 {
 					yyless(1);				/* eat only 'n' this time */
 					ECHO;
@@ -4143,7 +4151,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 510 "psqlscan.l"
+#line 519 "psqlscan.l"
 {
 					if (standard_strings())
 						BEGIN(xq);
@@ -4154,7 +4162,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 517 "psqlscan.l"
+#line 526 "psqlscan.l"
 {
 					BEGIN(xe);
 					ECHO;
@@ -4162,7 +4170,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 521 "psqlscan.l"
+#line 530 "psqlscan.l"
 {
 					BEGIN(xus);
 					ECHO;
@@ -4170,11 +4178,11 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 /* rule 22 can match eol */
-#line 526 "psqlscan.l"
+#line 535 "psqlscan.l"
 case 23:
 /* rule 23 can match eol */
 YY_RULE_SETUP
-#line 526 "psqlscan.l"
+#line 535 "psqlscan.l"
 {
 					yyless(1);
 					BEGIN(INITIAL);
@@ -4183,11 +4191,11 @@ YY_RULE_SETUP
 	YY_BREAK
 case 24:
 /* rule 24 can match eol */
-#line 532 "psqlscan.l"
+#line 541 "psqlscan.l"
 case 25:
 /* rule 25 can match eol */
 YY_RULE_SETUP
-#line 532 "psqlscan.l"
+#line 541 "psqlscan.l"
 {
 					yyless(1);
 					BEGIN(xusend);
@@ -4197,17 +4205,17 @@ YY_RULE_SETUP
 case 26:
 /* rule 26 can match eol */
 YY_RULE_SETUP
-#line 537 "psqlscan.l"
+#line 546 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 27:
-#line 541 "psqlscan.l"
+#line 550 "psqlscan.l"
 case 28:
 /* rule 28 can match eol */
 YY_RULE_SETUP
-#line 541 "psqlscan.l"
+#line 550 "psqlscan.l"
 {
 					yyless(0);
 					BEGIN(INITIAL);
@@ -4217,7 +4225,7 @@ YY_RULE_SETUP
 case 29:
 /* rule 29 can match eol */
 YY_RULE_SETUP
-#line 546 "psqlscan.l"
+#line 555 "psqlscan.l"
 {
 					BEGIN(INITIAL);
 					ECHO;
@@ -4225,7 +4233,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 550 "psqlscan.l"
+#line 559 "psqlscan.l"
 {
 					ECHO;
 				}
@@ -4233,7 +4241,7 @@ YY_RULE_SETUP
 case 31:
 /* rule 31 can match eol */
 YY_RULE_SETUP
-#line 553 "psqlscan.l"
+#line 562 "psqlscan.l"
 {
 					ECHO;
 				}
@@ -4241,21 +4249,21 @@ YY_RULE_SETUP
 case 32:
 /* rule 32 can match eol */
 YY_RULE_SETUP
-#line 556 "psqlscan.l"
+#line 565 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 559 "psqlscan.l"
+#line 568 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 562 "psqlscan.l"
+#line 571 "psqlscan.l"
 {
 					ECHO;
 				}
@@ -4263,21 +4271,21 @@ YY_RULE_SETUP
 case 35:
 /* rule 35 can match eol */
 YY_RULE_SETUP
-#line 565 "psqlscan.l"
+#line 574 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 568 "psqlscan.l"
+#line 577 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 571 "psqlscan.l"
+#line 580 "psqlscan.l"
 {
 					ECHO;
 				}
@@ -4285,14 +4293,14 @@ YY_RULE_SETUP
 case 38:
 /* rule 38 can match eol */
 YY_RULE_SETUP
-#line 574 "psqlscan.l"
+#line 583 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 577 "psqlscan.l"
+#line 586 "psqlscan.l"
 {
 					/* This is only needed for \ just before EOF */
 					ECHO;
@@ -4300,7 +4308,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 582 "psqlscan.l"
+#line 591 "psqlscan.l"
 {
 					cur_state->dolqstart = pg_strdup(yytext);
 					BEGIN(xdolq);
@@ -4309,7 +4317,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 587 "psqlscan.l"
+#line 596 "psqlscan.l"
 {
 					/* throw back all but the initial "$" */
 					yyless(1);
@@ -4318,7 +4326,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 592 "psqlscan.l"
+#line 601 "psqlscan.l"
 {
 					if (strcmp(yytext, cur_state->dolqstart) == 0)
 					{
@@ -4341,21 +4349,21 @@ YY_RULE_SETUP
 case 43:
 /* rule 43 can match eol */
 YY_RULE_SETUP
-#line 610 "psqlscan.l"
+#line 619 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 613 "psqlscan.l"
+#line 622 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 616 "psqlscan.l"
+#line 625 "psqlscan.l"
 {
 					/* This is only needed for $ inside the quoted text */
 					ECHO;
@@ -4363,7 +4371,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 621 "psqlscan.l"
+#line 630 "psqlscan.l"
 {
 					BEGIN(xd);
 					ECHO;
@@ -4371,7 +4379,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 625 "psqlscan.l"
+#line 634 "psqlscan.l"
 {
 					BEGIN(xui);
 					ECHO;
@@ -4379,7 +4387,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 629 "psqlscan.l"
+#line 638 "psqlscan.l"
 {
 					BEGIN(INITIAL);
 					ECHO;
@@ -4387,7 +4395,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 633 "psqlscan.l"
+#line 642 "psqlscan.l"
 {
 					yyless(1);
 					BEGIN(xuiend);
@@ -4397,17 +4405,17 @@ YY_RULE_SETUP
 case 50:
 /* rule 50 can match eol */
 YY_RULE_SETUP
-#line 638 "psqlscan.l"
+#line 647 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 51:
-#line 642 "psqlscan.l"
+#line 651 "psqlscan.l"
 case 52:
 /* rule 52 can match eol */
 YY_RULE_SETUP
-#line 642 "psqlscan.l"
+#line 651 "psqlscan.l"
 {
 					yyless(0);
 					BEGIN(INITIAL);
@@ -4417,7 +4425,7 @@ YY_RULE_SETUP
 case 53:
 /* rule 53 can match eol */
 YY_RULE_SETUP
-#line 647 "psqlscan.l"
+#line 656 "psqlscan.l"
 {
 					BEGIN(INITIAL);
 					ECHO;
@@ -4425,7 +4433,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 651 "psqlscan.l"
+#line 660 "psqlscan.l"
 {
 					ECHO;
 				}
@@ -4433,14 +4441,14 @@ YY_RULE_SETUP
 case 55:
 /* rule 55 can match eol */
 YY_RULE_SETUP
-#line 654 "psqlscan.l"
+#line 663 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 658 "psqlscan.l"
+#line 667 "psqlscan.l"
 {
 					/* throw back all but the initial u/U */
 					yyless(1);
@@ -4449,56 +4457,56 @@ YY_RULE_SETUP
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 664 "psqlscan.l"
+#line 673 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 668 "psqlscan.l"
+#line 677 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 672 "psqlscan.l"
+#line 681 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 676 "psqlscan.l"
+#line 685 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 680 "psqlscan.l"
+#line 689 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 684 "psqlscan.l"
+#line 693 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 688 "psqlscan.l"
+#line 697 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 692 "psqlscan.l"
+#line 701 "psqlscan.l"
 {
 					ECHO;
 				}
@@ -4510,7 +4518,7 @@ YY_RULE_SETUP
 	 */
 case 65:
 YY_RULE_SETUP
-#line 702 "psqlscan.l"
+#line 711 "psqlscan.l"
 {
 					cur_state->paren_depth++;
 					ECHO;
@@ -4518,7 +4526,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 707 "psqlscan.l"
+#line 716 "psqlscan.l"
 {
 					if (cur_state->paren_depth > 0)
 						cur_state->paren_depth--;
@@ -4527,7 +4535,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 713 "psqlscan.l"
+#line 722 "psqlscan.l"
 {
 					ECHO;
 					if (cur_state->paren_depth == 0)
@@ -4543,7 +4551,7 @@ YY_RULE_SETUP
 	 */
 case 68:
 YY_RULE_SETUP
-#line 727 "psqlscan.l"
+#line 736 "psqlscan.l"
 {
 					/* Force a semicolon or colon into the query buffer */
 					emit(yytext + 1, 1);
@@ -4551,7 +4559,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 732 "psqlscan.l"
+#line 741 "psqlscan.l"
 {
 					/* Terminate lexing temporarily */
 					return LEXRES_BACKSLASH;
@@ -4559,7 +4567,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 737 "psqlscan.l"
+#line 746 "psqlscan.l"
 {
 					/* Possible psql variable substitution */
 					char   *varname;
@@ -4600,14 +4608,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 775 "psqlscan.l"
+#line 784 "psqlscan.l"
 {
 					escape_variable(false);
 				}
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 779 "psqlscan.l"
+#line 788 "psqlscan.l"
 {
 					escape_variable(true);
 				}
@@ -4618,7 +4626,7 @@ YY_RULE_SETUP
 	 */
 case 73:
 YY_RULE_SETUP
-#line 788 "psqlscan.l"
+#line 797 "psqlscan.l"
 {
 					/* Throw back everything but the colon */
 					yyless(1);
@@ -4627,7 +4635,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 794 "psqlscan.l"
+#line 803 "psqlscan.l"
 {
 					/* Throw back everything but the colon */
 					yyless(1);
@@ -4639,14 +4647,14 @@ YY_RULE_SETUP
 	 */
 case 75:
 YY_RULE_SETUP
-#line 804 "psqlscan.l"
+#line 813 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 808 "psqlscan.l"
+#line 817 "psqlscan.l"
 {
 					/*
 					 * Check for embedded slash-star or dash-dash; those
@@ -4677,20 +4685,33 @@ YY_RULE_SETUP
 					 * to forbid operator names like '?-' that could not be
 					 * sequences of SQL operators.
 					 */
-					while (nchars > 1 &&
-						   (yytext[nchars-1] == '+' ||
-							yytext[nchars-1] == '-'))
+					if (nchars > 1 &&
+						(yytext[nchars - 1] == '+' ||
+						 yytext[nchars - 1] == '-'))
 					{
 						int		ic;
 
-						for (ic = nchars-2; ic >= 0; ic--)
+						for (ic = nchars - 2; ic >= 0; ic--)
 						{
-							if (strchr("~!@#^&|`?%", yytext[ic]))
+							char c = yytext[ic];
+							if (c == '~' || c == '!' || c == '@' ||
+								c == '#' || c == '^' || c == '&' ||
+								c == '|' || c == '`' || c == '?' ||
+								c == '%')
 								break;
 						}
-						if (ic >= 0)
-							break; /* found a char that makes it OK */
-						nchars--; /* else remove the +/-, and check again */
+						if (ic < 0)
+						{
+							/*
+							 * didn't find a qualifying character, so remove
+							 * all trailing [+-]
+							 */
+							do {
+								nchars--;
+							} while (nchars > 1 &&
+								 (yytext[nchars - 1] == '+' ||
+								  yytext[nchars - 1] == '-'));
+						}
 					}
 
 					if (nchars < yyleng)
@@ -4703,28 +4724,28 @@ YY_RULE_SETUP
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 862 "psqlscan.l"
+#line 884 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 866 "psqlscan.l"
+#line 888 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 869 "psqlscan.l"
+#line 891 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 872 "psqlscan.l"
+#line 894 "psqlscan.l"
 {
 					/* throw back the .., and treat as integer */
 					yyless(yyleng-2);
@@ -4733,14 +4754,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 877 "psqlscan.l"
+#line 899 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 880 "psqlscan.l"
+#line 902 "psqlscan.l"
 {
 					/*
 					 * throw back the [Ee], and treat as {decimal}.  Note
@@ -4754,7 +4775,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 890 "psqlscan.l"
+#line 912 "psqlscan.l"
 {
 					/* throw back the [Ee][+-], and proceed as above */
 					yyless(yyleng-2);
@@ -4763,14 +4784,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 897 "psqlscan.l"
+#line 919 "psqlscan.l"
 {
 					ECHO;
 				}
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 901 "psqlscan.l"
+#line 923 "psqlscan.l"
 {
 					ECHO;
 				}
@@ -4798,7 +4819,7 @@ case YY_STATE_EOF(xslashbackquote):
 case YY_STATE_EOF(xslashdquote):
 case YY_STATE_EOF(xslashwholeline):
 case YY_STATE_EOF(xslashend):
-#line 910 "psqlscan.l"
+#line 932 "psqlscan.l"
 {
 					StackElem  *stackelem = cur_state->buffer_stack;
 
@@ -4834,7 +4855,7 @@ case YY_STATE_EOF(xslashend):
 case 86:
 /* rule 86 can match eol */
 YY_RULE_SETUP
-#line 944 "psqlscan.l"
+#line 966 "psqlscan.l"
 {
 					yyless(0);
 					return LEXRES_OK;
@@ -4842,7 +4863,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
-#line 949 "psqlscan.l"
+#line 971 "psqlscan.l"
 { ECHO; }
 	YY_BREAK
 
@@ -4855,12 +4876,12 @@ YY_RULE_SETUP
 case 88:
 /* rule 88 can match eol */
 YY_RULE_SETUP
-#line 960 "psqlscan.l"
+#line 982 "psqlscan.l"
 { }
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-#line 962 "psqlscan.l"
+#line 984 "psqlscan.l"
 {
 					if (option_type == OT_FILEPIPE)
 					{
@@ -4878,7 +4899,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
-#line 977 "psqlscan.l"
+#line 999 "psqlscan.l"
 {
 					yyless(0);
 					BEGIN(xslasharg);
@@ -4896,7 +4917,7 @@ YY_RULE_SETUP
 case 91:
 /* rule 91 can match eol */
 YY_RULE_SETUP
-#line 993 "psqlscan.l"
+#line 1015 "psqlscan.l"
 {
 					/*
 					 * Unquoted space is end of arg; do not eat.  Likewise
@@ -4913,7 +4934,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
-#line 1007 "psqlscan.l"
+#line 1029 "psqlscan.l"
 {
 					*option_quote = '\'';
 					unquoted_option_chars = 0;
@@ -4922,7 +4943,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
-#line 1013 "psqlscan.l"
+#line 1035 "psqlscan.l"
 {
 					backtick_start_offset = output_buf->len;
 					*option_quote = '`';
@@ -4932,7 +4953,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
-#line 1020 "psqlscan.l"
+#line 1042 "psqlscan.l"
 {
 					ECHO;
 					*option_quote = '"';
@@ -4942,7 +4963,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 95:
 YY_RULE_SETUP
-#line 1027 "psqlscan.l"
+#line 1049 "psqlscan.l"
 {
 					/* Possible psql variable substitution */
 					if (option_type == OT_NO_EVAL)
@@ -4975,7 +4996,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 96:
 YY_RULE_SETUP
-#line 1057 "psqlscan.l"
+#line 1079 "psqlscan.l"
 {
 					if (option_type == OT_NO_EVAL)
 						ECHO;
@@ -4989,7 +5010,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
-#line 1069 "psqlscan.l"
+#line 1091 "psqlscan.l"
 {
 					if (option_type == OT_NO_EVAL)
 						ECHO;
@@ -5003,7 +5024,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
-#line 1080 "psqlscan.l"
+#line 1102 "psqlscan.l"
 {
 					/* Throw back everything but the colon */
 					yyless(1);
@@ -5013,7 +5034,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
-#line 1087 "psqlscan.l"
+#line 1109 "psqlscan.l"
 {
 					/* Throw back everything but the colon */
 					yyless(1);
@@ -5023,7 +5044,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 100:
 YY_RULE_SETUP
-#line 1094 "psqlscan.l"
+#line 1116 "psqlscan.l"
 {
 					unquoted_option_chars++;
 					ECHO;
@@ -5037,42 +5058,42 @@ YY_RULE_SETUP
 	 */
 case 101:
 YY_RULE_SETUP
-#line 1107 "psqlscan.l"
+#line 1129 "psqlscan.l"
 { BEGIN(xslasharg); }
 	YY_BREAK
 case 102:
 YY_RULE_SETUP
-#line 1109 "psqlscan.l"
+#line 1131 "psqlscan.l"
 { appendPQExpBufferChar(output_buf, '\''); }
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
-#line 1111 "psqlscan.l"
+#line 1133 "psqlscan.l"
 { appendPQExpBufferChar(output_buf, '\n'); }
 	YY_BREAK
 case 104:
 YY_RULE_SETUP
-#line 1112 "psqlscan.l"
+#line 1134 "psqlscan.l"
 { appendPQExpBufferChar(output_buf, '\t'); }
 	YY_BREAK
 case 105:
 YY_RULE_SETUP
-#line 1113 "psqlscan.l"
+#line 1135 "psqlscan.l"
 { appendPQExpBufferChar(output_buf, '\b'); }
 	YY_BREAK
 case 106:
 YY_RULE_SETUP
-#line 1114 "psqlscan.l"
+#line 1136 "psqlscan.l"
 { appendPQExpBufferChar(output_buf, '\r'); }
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
-#line 1115 "psqlscan.l"
+#line 1137 "psqlscan.l"
 { appendPQExpBufferChar(output_buf, '\f'); }
 	YY_BREAK
 case 108:
 YY_RULE_SETUP
-#line 1117 "psqlscan.l"
+#line 1139 "psqlscan.l"
 {
 					/* octal case */
 					appendPQExpBufferChar(output_buf,
@@ -5081,7 +5102,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 109:
 YY_RULE_SETUP
-#line 1123 "psqlscan.l"
+#line 1145 "psqlscan.l"
 {
 					/* hex case */
 					appendPQExpBufferChar(output_buf,
@@ -5090,13 +5111,13 @@ YY_RULE_SETUP
 	YY_BREAK
 case 110:
 YY_RULE_SETUP
-#line 1129 "psqlscan.l"
+#line 1151 "psqlscan.l"
 { emit(yytext + 1, 1); }
 	YY_BREAK
 case 111:
 /* rule 111 can match eol */
 YY_RULE_SETUP
-#line 1131 "psqlscan.l"
+#line 1153 "psqlscan.l"
 { ECHO; }
 	YY_BREAK
 
@@ -5108,7 +5129,7 @@ YY_RULE_SETUP
 	 */
 case 112:
 YY_RULE_SETUP
-#line 1142 "psqlscan.l"
+#line 1164 "psqlscan.l"
 {
 					/* In NO_EVAL mode, don't evaluate the command */
 					if (option_type != OT_NO_EVAL)
@@ -5119,7 +5140,7 @@ YY_RULE_SETUP
 case 113:
 /* rule 113 can match eol */
 YY_RULE_SETUP
-#line 1149 "psqlscan.l"
+#line 1171 "psqlscan.l"
 { ECHO; }
 	YY_BREAK
 
@@ -5127,7 +5148,7 @@ YY_RULE_SETUP
 /* double-quoted text: copy verbatim, including the double quotes */
 case 114:
 YY_RULE_SETUP
-#line 1156 "psqlscan.l"
+#line 1178 "psqlscan.l"
 {
 					ECHO;
 					BEGIN(xslasharg);
@@ -5136,7 +5157,7 @@ YY_RULE_SETUP
 case 115:
 /* rule 115 can match eol */
 YY_RULE_SETUP
-#line 1161 "psqlscan.l"
+#line 1183 "psqlscan.l"
 { ECHO; }
 	YY_BREAK
 
@@ -5146,7 +5167,7 @@ YY_RULE_SETUP
 case 116:
 /* rule 116 can match eol */
 YY_RULE_SETUP
-#line 1169 "psqlscan.l"
+#line 1191 "psqlscan.l"
 {
 					if (output_buf->len > 0)
 						ECHO;
@@ -5154,7 +5175,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 117:
 YY_RULE_SETUP
-#line 1174 "psqlscan.l"
+#line 1196 "psqlscan.l"
 { ECHO; }
 	YY_BREAK
 
@@ -5162,13 +5183,13 @@ YY_RULE_SETUP
 /* at end of command, eat a double backslash, but not anything else */
 case 118:
 YY_RULE_SETUP
-#line 1181 "psqlscan.l"
+#line 1203 "psqlscan.l"
 { return LEXRES_OK; }
 	YY_BREAK
 case 119:
 /* rule 119 can match eol */
 YY_RULE_SETUP
-#line 1183 "psqlscan.l"
+#line 1205 "psqlscan.l"
 {
 					yyless(0);
 					return LEXRES_OK;
@@ -5177,10 +5198,10 @@ YY_RULE_SETUP
 
 case 120:
 YY_RULE_SETUP
-#line 1190 "psqlscan.l"
+#line 1212 "psqlscan.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 5184 "psqlscan.c"
+#line 5205 "psqlscan.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -6117,7 +6138,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 1190 "psqlscan.l"
+#line 1212 "psqlscan.l"
 
 
 

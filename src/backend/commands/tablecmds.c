@@ -1017,13 +1017,14 @@ ExecuteTruncate(TruncateStmt *stmt)
 		Relation	rel;
 		bool		recurse = interpretInhOption(rv->inhOpt);
 		Oid			myrelid;
+		LOCKMODE	lockmode = AccessExclusiveLock;
 
-		rel = heap_openrv(rv, AccessExclusiveLock);
+		rel = heap_openrv(rv, lockmode);
 		myrelid = RelationGetRelid(rel);
 		/* don't throw error for "TRUNCATE foo, foo" */
 		if (list_member_oid(relids, myrelid))
 		{
-			heap_close(rel, AccessExclusiveLock);
+			heap_close(rel, lockmode);
 			continue;
 		}
 		truncate_check_rel(rel);
@@ -1035,7 +1036,7 @@ ExecuteTruncate(TruncateStmt *stmt)
 			ListCell   *child;
 			List	   *children;
 
-			children = find_all_inheritors(myrelid, AccessExclusiveLock, NULL);
+			children = find_all_inheritors(myrelid, lockmode, NULL);
 
 			foreach(child, children)
 			{
@@ -1046,6 +1047,22 @@ ExecuteTruncate(TruncateStmt *stmt)
 
 				/* find_all_inheritors already got lock */
 				rel = heap_open(childrelid, NoLock);
+
+				/*
+				 * It is possible that the parent table has children that are
+				 * temp tables of other backends.  We cannot safely access
+				 * such tables (because of buffering issues), and the best
+				 * thing to do is to silently ignore them.  Note that this
+				 * check is the same as one of the checks done in
+				 * truncate_check_rel() called below, still it is kept
+				 * here for simplicity.
+				 */
+				if (RELATION_IS_OTHER_TEMP(rel))
+				{
+					heap_close(rel, lockmode);
+					continue;
+				}
+
 				truncate_check_rel(rel);
 				rels = lappend(rels, rel);
 				relids = lappend_oid(relids, childrelid);
@@ -1221,19 +1238,22 @@ ExecuteTruncate(TruncateStmt *stmt)
 				heap_create_init_fork(rel);
 
 			heap_relid = RelationGetRelid(rel);
-			toast_relid = rel->rd_rel->reltoastrelid;
 
 			/*
 			 * The same for the toast table, if any.
 			 */
+			toast_relid = rel->rd_rel->reltoastrelid;
 			if (OidIsValid(toast_relid))
 			{
-				rel = relation_open(toast_relid, AccessExclusiveLock);
-				RelationSetNewRelfilenode(rel, rel->rd_rel->relpersistence,
+				Relation	toastrel = relation_open(toast_relid,
+													 AccessExclusiveLock);
+
+				RelationSetNewRelfilenode(toastrel,
+										  toastrel->rd_rel->relpersistence,
 										  RecentXmin, minmulti);
-				if (rel->rd_rel->relpersistence == RELPERSISTENCE_UNLOGGED)
-					heap_create_init_fork(rel);
-				heap_close(rel, NoLock);
+				if (toastrel->rd_rel->relpersistence == RELPERSISTENCE_UNLOGGED)
+					heap_create_init_fork(toastrel);
+				heap_close(toastrel, NoLock);
 			}
 
 			/*
@@ -2483,7 +2503,14 @@ rename_constraint_internal(Oid myrelid,
 	ReleaseSysCache(tuple);
 
 	if (targetrelation)
+	{
+		/*
+		 * Invalidate relcache so as others can see the new constraint name.
+		 */
+		CacheInvalidateRelcache(targetrelation);
+
 		relation_close(targetrelation, NoLock); /* close rel but keep lock */
+	}
 
 	return address;
 }
@@ -5977,7 +6004,7 @@ ATExecAddIndexConstraint(AlteredTableInfo *tab, Relation rel,
 
 	/* Extra checks needed if making primary key */
 	if (stmt->primary)
-		index_check_primary_key(rel, indexInfo, true);
+		index_check_primary_key(rel, indexInfo, true, stmt);
 
 	/* Note we currently don't support EXCLUSION constraints here */
 	if (stmt->primary)
@@ -8656,8 +8683,7 @@ ATPostAlterTypeCleanup(List **wqueue, AlteredTableInfo *tab, LOCKMODE lockmode)
 	 * appropriate work queue entries.  We do this before dropping because in
 	 * the case of a FOREIGN KEY constraint, we might not yet have exclusive
 	 * lock on the table the constraint is attached to, and we need to get
-	 * that before dropping.  It's safe because the parser won't actually look
-	 * at the catalogs to detect the existing entry.
+	 * that before reparsing/dropping.
 	 *
 	 * We can't rely on the output of deparsing to tell us which relation to
 	 * operate on, because concurrent activity might have made the name
@@ -8673,6 +8699,7 @@ ATPostAlterTypeCleanup(List **wqueue, AlteredTableInfo *tab, LOCKMODE lockmode)
 		Form_pg_constraint con;
 		Oid			relid;
 		Oid			confrelid;
+		char		contype;
 		bool		conislocal;
 
 		tup = SearchSysCache1(CONSTROID, ObjectIdGetDatum(oldId));
@@ -8681,6 +8708,7 @@ ATPostAlterTypeCleanup(List **wqueue, AlteredTableInfo *tab, LOCKMODE lockmode)
 		con = (Form_pg_constraint) GETSTRUCT(tup);
 		relid = con->conrelid;
 		confrelid = con->confrelid;
+		contype = con->contype;
 		conislocal = con->conislocal;
 		ReleaseSysCache(tup);
 
@@ -8692,6 +8720,15 @@ ATPostAlterTypeCleanup(List **wqueue, AlteredTableInfo *tab, LOCKMODE lockmode)
 		 */
 		if (!conislocal)
 			continue;
+
+		/*
+		 * When rebuilding an FK constraint that references the table we're
+		 * modifying, we might not yet have any lock on the FK's table, so get
+		 * one now.  We'll need AccessExclusiveLock for the DROP CONSTRAINT
+		 * step, so there's no value in asking for anything weaker.
+		 */
+		if (relid != tab->relid && contype == CONSTRAINT_FOREIGN)
+			LockRelationOid(relid, AccessExclusiveLock);
 
 		ATPostAlterTypeParse(oldId, relid, confrelid,
 							 (char *) lfirst(def_item),
@@ -9192,17 +9229,13 @@ ATExecChangeOwner(Oid relationOid, Oid newOwnerId, bool recursing, LOCKMODE lock
 			list_free(index_oid_list);
 		}
 
-		if (tuple_class->relkind == RELKIND_RELATION ||
-			tuple_class->relkind == RELKIND_MATVIEW)
-		{
-			/* If it has a toast table, recurse to change its ownership */
-			if (tuple_class->reltoastrelid != InvalidOid)
-				ATExecChangeOwner(tuple_class->reltoastrelid, newOwnerId,
-								  true, lockmode);
+		/* If it has a toast table, recurse to change its ownership */
+		if (tuple_class->reltoastrelid != InvalidOid)
+			ATExecChangeOwner(tuple_class->reltoastrelid, newOwnerId,
+							  true, lockmode);
 
-			/* If it has dependent sequences, recurse to change them too */
-			change_owner_recurse_to_sequences(relationOid, newOwnerId, lockmode);
-		}
+		/* If it has dependent sequences, recurse to change them too */
+		change_owner_recurse_to_sequences(relationOid, newOwnerId, lockmode);
 	}
 
 	InvokeObjectPostAlterHook(RelationRelationId, relationOid, 0);
@@ -9523,7 +9556,7 @@ ATExecSetRelOptions(Relation rel, List *defList, AlterTableType operation,
 				ereport(ERROR,
 						(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
 						 errmsg("WITH CHECK OPTION is supported only on automatically updatable views"),
-						 errhint("%s", view_updatable_error)));
+						 errhint("%s", _(view_updatable_error))));
 		}
 	}
 
@@ -9971,21 +10004,14 @@ static void
 copy_relation_data(SMgrRelation src, SMgrRelation dst,
 				   ForkNumber forkNum, char relpersistence)
 {
-	char	   *buf;
+	PGAlignedBlock buf;
 	Page		page;
 	bool		use_wal;
 	bool		copying_initfork;
 	BlockNumber nblocks;
 	BlockNumber blkno;
 
-	/*
-	 * palloc the buffer so that it's MAXALIGN'd.  If it were just a local
-	 * char[] array, the compiler might align it on any byte boundary, which
-	 * can seriously hurt transfer speed to and from the kernel; not to
-	 * mention possibly making log_newpage's accesses to the page header fail.
-	 */
-	buf = (char *) palloc(BLCKSZ);
-	page = (Page) buf;
+	page = (Page) buf.data;
 
 	/*
 	 * The init fork for an unlogged relation in many respects has to be
@@ -10009,7 +10035,7 @@ copy_relation_data(SMgrRelation src, SMgrRelation dst,
 		/* If we got a cancel signal during the copy of the data, quit */
 		CHECK_FOR_INTERRUPTS();
 
-		smgrread(src, forkNum, blkno, buf);
+		smgrread(src, forkNum, blkno, buf.data);
 
 		if (!PageIsVerified(page, blkno))
 			ereport(ERROR,
@@ -10035,10 +10061,8 @@ copy_relation_data(SMgrRelation src, SMgrRelation dst,
 		 * rel, because there's no need for smgr to schedule an fsync for this
 		 * write; we'll do it ourselves below.
 		 */
-		smgrextend(dst, forkNum, blkno, buf, true);
+		smgrextend(dst, forkNum, blkno, buf.data, true);
 	}
-
-	pfree(buf);
 
 	/*
 	 * If the rel is WAL-logged, must fsync before commit.  We use heap_sync

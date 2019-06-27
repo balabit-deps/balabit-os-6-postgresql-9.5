@@ -479,6 +479,7 @@ typedef struct
 #ifndef WIN32
 	unsigned long UsedShmemSegID;
 #else
+	void	   *ShmemProtectiveRegion;
 	HANDLE		UsedShmemSegID;
 #endif
 	void	   *UsedShmemSegAddr;
@@ -2517,7 +2518,7 @@ reset_shared(int port)
 	 * determine IPC keys.  This helps ensure that we will clean up dead IPC
 	 * objects if the postmaster crashes and is restarted.
 	 */
-	CreateSharedMemoryAndSemaphores(false, port);
+	CreateSharedMemoryAndSemaphores(port);
 }
 
 
@@ -2664,7 +2665,7 @@ pmdie(SIGNAL_ARGS)
 				signal_child(BgWriterPID, SIGTERM);
 			if (WalReceiverPID != 0)
 				signal_child(WalReceiverPID, SIGTERM);
-			if (pmState == PM_RECOVERY)
+			if (pmState == PM_STARTUP || pmState == PM_RECOVERY)
 			{
 				SignalSomeChildren(SIGTERM, BACKEND_TYPE_BGWORKER);
 				/*
@@ -3688,12 +3689,8 @@ PostmasterStateMachine(void)
 		 * dead_end children left. There shouldn't be any regular backends
 		 * left by now anyway; what we're really waiting for is walsenders and
 		 * archiver.
-		 *
-		 * Walreceiver should normally be dead by now, but not when a fast
-		 * shutdown is performed during recovery.
 		 */
-		if (PgArchPID == 0 && CountChildren(BACKEND_TYPE_ALL) == 0 &&
-			WalReceiverPID == 0)
+		if (PgArchPID == 0 && CountChildren(BACKEND_TYPE_ALL) == 0)
 		{
 			pmState = PM_WAIT_DEAD_END;
 		}
@@ -4804,7 +4801,7 @@ SubPostmasterMain(int argc, char *argv[])
 		InitProcess();
 
 		/* Attach process to shared data structures */
-		CreateSharedMemoryAndSemaphores(false, 0);
+		CreateSharedMemoryAndSemaphores(0);
 
 		/* And run the backend */
 		BackendRun(&port);		/* does not return */
@@ -4818,7 +4815,7 @@ SubPostmasterMain(int argc, char *argv[])
 		InitAuxiliaryProcess();
 
 		/* Attach process to shared data structures */
-		CreateSharedMemoryAndSemaphores(false, 0);
+		CreateSharedMemoryAndSemaphores(0);
 
 		AuxiliaryProcessMain(argc - 2, argv + 2);		/* does not return */
 	}
@@ -4831,7 +4828,7 @@ SubPostmasterMain(int argc, char *argv[])
 		InitProcess();
 
 		/* Attach process to shared data structures */
-		CreateSharedMemoryAndSemaphores(false, 0);
+		CreateSharedMemoryAndSemaphores(0);
 
 		AutoVacLauncherMain(argc - 2, argv + 2);		/* does not return */
 	}
@@ -4844,7 +4841,7 @@ SubPostmasterMain(int argc, char *argv[])
 		InitProcess();
 
 		/* Attach process to shared data structures */
-		CreateSharedMemoryAndSemaphores(false, 0);
+		CreateSharedMemoryAndSemaphores(0);
 
 		AutoVacWorkerMain(argc - 2, argv + 2);	/* does not return */
 	}
@@ -4862,7 +4859,7 @@ SubPostmasterMain(int argc, char *argv[])
 		InitProcess();
 
 		/* Attach process to shared data structures */
-		CreateSharedMemoryAndSemaphores(false, 0);
+		CreateSharedMemoryAndSemaphores(0);
 
 		/* Fetch MyBgworkerEntry from shared memory */
 		shmem_slot = atoi(argv[1] + 15);
@@ -5045,16 +5042,25 @@ sigusr1_handler(SIGNAL_ARGS)
 		MaybeStartWalReceiver();
 	}
 
-	if (CheckPostmasterSignal(PMSIGNAL_ADVANCE_STATE_MACHINE) &&
-		(pmState == PM_WAIT_BACKUP || pmState == PM_WAIT_BACKENDS))
+	/*
+	 * Try to advance postmaster's state machine, if a child requests it.
+	 *
+	 * Be careful about the order of this action relative to sigusr1_handler's
+	 * other actions.  Generally, this should be after other actions, in case
+	 * they have effects PostmasterStateMachine would need to know about.
+	 * However, we should do it before the CheckPromoteSignal step, which
+	 * cannot have any (immediate) effect on the state machine, but does
+	 * depend on what state we're in now.
+	 */
+	if (CheckPostmasterSignal(PMSIGNAL_ADVANCE_STATE_MACHINE))
 	{
-		/* Advance postmaster's state machine */
 		PostmasterStateMachine();
 	}
 
-	if (CheckPromoteSignal() && StartupPID != 0 &&
+	if (StartupPID != 0 &&
 		(pmState == PM_STARTUP || pmState == PM_RECOVERY ||
-		 pmState == PM_HOT_STANDBY || pmState == PM_WAIT_READONLY))
+		 pmState == PM_HOT_STANDBY || pmState == PM_WAIT_READONLY) &&
+		CheckPromoteSignal())
 	{
 		/* Tell startup process to finish recovery */
 		signal_child(StartupPID, SIGUSR2);
@@ -5396,6 +5402,14 @@ StartAutovacuumWorker(void)
 /*
  * MaybeStartWalReceiver
  *		Start the WAL receiver process, if not running and our state allows.
+ *
+ * Note: if WalReceiverPID is already nonzero, it might seem that we should
+ * clear WalReceiverRequested.  However, there's a race condition if the
+ * walreceiver terminates and the startup process immediately requests a new
+ * one: it's quite possible to get the signal for the request before reaping
+ * the dead walreceiver process.  Better to risk launching an extra
+ * walreceiver than to miss launching one we need.  (The walreceiver code
+ * has logic to recognize that it should go away if not needed.)
  */
 static void
 MaybeStartWalReceiver(void)
@@ -5406,7 +5420,9 @@ MaybeStartWalReceiver(void)
 		Shutdown == NoShutdown)
 	{
 		WalReceiverPID = StartWalReceiver();
-		WalReceiverRequested = false;
+		if (WalReceiverPID != 0)
+			WalReceiverRequested = false;
+		/* else leave the flag set, so we'll try again later */
 	}
 }
 
@@ -5898,6 +5914,9 @@ save_backend_variables(BackendParameters *param, Port *port,
 	param->MyCancelKey = MyCancelKey;
 	param->MyPMChildSlot = MyPMChildSlot;
 
+#ifdef WIN32
+	param->ShmemProtectiveRegion = ShmemProtectiveRegion;
+#endif
 	param->UsedShmemSegID = UsedShmemSegID;
 	param->UsedShmemSegAddr = UsedShmemSegAddr;
 
@@ -6129,6 +6148,9 @@ restore_backend_variables(BackendParameters *param, Port *port)
 	MyCancelKey = param->MyCancelKey;
 	MyPMChildSlot = param->MyPMChildSlot;
 
+#ifdef WIN32
+	ShmemProtectiveRegion = param->ShmemProtectiveRegion;
+#endif
 	UsedShmemSegID = param->UsedShmemSegID;
 	UsedShmemSegAddr = param->UsedShmemSegAddr;
 

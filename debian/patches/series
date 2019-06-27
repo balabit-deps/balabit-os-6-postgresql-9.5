@@ -7,3 +7,4 @@
 64-pg_upgrade-sockdir
 70-history
 99-pg_ctl-should-not-wait-for-timestamp-update.patch
+pg-9.5-Disallow-setting-client_min_messages-higher-than-ERR.patch

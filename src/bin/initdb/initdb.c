@@ -688,7 +688,7 @@ fsync_fname_ext(const char *fname, bool isdir)
 	 * Some OSes don't allow us to fsync directories at all, so we can ignore
 	 * those errors. Anything else needs to be reported.
 	 */
-	if (returncode != 0 && !(isdir && errno == EBADF))
+	if (returncode != 0 && !(isdir && (errno == EBADF || errno == EINVAL)))
 		fprintf(stderr, _("%s: could not fsync file \"%s\": %s\n"),
 				progname, fname, strerror(errno));
 
@@ -1046,6 +1046,9 @@ choose_dsm_implementation(void)
 {
 #ifdef HAVE_SHM_OPEN
 	int			ntries = 10;
+
+	/* Initialize random(); this function is its only user in this program. */
+	srandom((unsigned int) (getpid() ^ time(NULL)));
 
 	while (ntries > 0)
 	{
@@ -3257,7 +3260,7 @@ create_xlog_or_symlink(void)
 			exit_nicely();
 		}
 #else
-		fprintf(stderr, _("%s: symlinks are not supported on this platform"));
+		fprintf(stderr, _("%s: symlinks are not supported on this platform\n"), progname);
 		exit_nicely();
 #endif
 	}

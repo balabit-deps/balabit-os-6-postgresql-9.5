@@ -1,3 +1,14 @@
+postgresql-9.5 (9.5.18-0ubuntu0.16.04.1) xenial; urgency=medium
+
+   * New upstream release (LP: #1833211)
+    - Fix failure of ALTER TABLE ... ALTER COLUMN TYPE when the table has
+      a partial exclusion constraint
+    - Fix failure of COMMENT command for comments on domain constraints
+    - Details about these and many further changes can be found at:
+      https://www.postgresql.org/docs/9.5/static/release-9-5-18.html
+
+ -- Christian Ehrhardt <christian.ehrhardt@canonical.com>  Tue, 18 Jun 2019 13:11:33 +0200
+
 postgresql-9.5 (9.5.17-0ubuntu0.16.04.1bb1) xenial; urgency=medium
 
   * Balabit patched version

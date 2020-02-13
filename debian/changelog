@@ -1,3 +1,15 @@
+postgresql-9.5 (9.5.21-0ubuntu0.16.04.1) xenial; urgency=medium
+
+  * New upstream release (LP: #1863108)
+    - A dump/restore is not required however, if you use the contrib/intarray
+      extension with a GiST index, and you rely on indexed searches for the <@
+      operator, see the release notes for details in regard to a related fix.
+    - Details about these and many further changes can be found at:
+      https://www.postgresql.org/docs/9.5/static/release-9-5-20.html
+      https://www.postgresql.org/docs/9.5/static/release-9-5-21.html
+
+ -- Christian Ehrhardt <christian.ehrhardt@canonical.com>  Thu, 13 Feb 2020 15:18:20 +0100
+
 postgresql-9.5 (9.5.19-0ubuntu0.16.04.1) xenial-security; urgency=medium
 
   * SECURITY UPDATE: New upstream release (LP: #1839058)

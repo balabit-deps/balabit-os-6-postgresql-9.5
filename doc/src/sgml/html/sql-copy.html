@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.19 Documentation"
+TITLE="PostgreSQL 9.5.21 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="SQL Commands"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2019-08-05T21:33:19"></HEAD
+CONTENT="2020-02-10T22:35:27"></HEAD
 ><BODY
 CLASS="REFENTRY"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.19 Documentation</A
+>PostgreSQL 9.5.21 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -95,7 +95,7 @@ NAME="SQL-COPY"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN74756"
+NAME="AEN74834"
 ></A
 ><H2
 >Name</H2
@@ -103,7 +103,7 @@ NAME="AEN74756"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN74759"
+NAME="AEN74837"
 ></A
 ><H2
 >Synopsis</H2
@@ -261,7 +261,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN74786"
+NAME="AEN74864"
 ></A
 ><H2
 >Description</H2
@@ -305,17 +305,20 @@ CLASS="COMMAND"
 > query.
   </P
 ><P
->   If a list of columns is specified, <TT
+>   If a column list is specified, <TT
 CLASS="COMMAND"
->COPY</TT
-> will
-   only copy the data in the specified columns to or from the file.
-   If there are any columns in the table that are not in the column list,
-   <TT
+>COPY TO</TT
+> copies only
+   the data in the specified columns to the file.  For <TT
 CLASS="COMMAND"
->COPY FROM</TT
-> will insert the default values for
-   those columns.
+>COPY
+   FROM</TT
+>, each field in the file is inserted, in order, into the
+   specified column.  Table columns not specified in the <TT
+CLASS="COMMAND"
+>COPY
+   FROM</TT
+> column list will receive their default values.
   </P
 ><P
 >   <TT
@@ -357,7 +360,7 @@ CLASS="LITERAL"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN74808"
+NAME="AEN74887"
 ></A
 ><H2
 >Parameters</H2
@@ -810,7 +813,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN74959"
+NAME="AEN75038"
 ></A
 ><H2
 >Outputs</H2
@@ -868,7 +871,7 @@ CLASS="LITERAL"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN74972"
+NAME="AEN75051"
 ></A
 ><H2
 >Notes</H2
@@ -1151,14 +1154,14 @@ CLASS="LITERAL"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN75041"
+NAME="AEN75120"
 ></A
 ><H2
 >File Formats</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN75043"
+NAME="AEN75122"
 ></A
 ><H3
 >Text Format</H3
@@ -1249,7 +1252,7 @@ CLASS="INFORMALTABLE"
 ><P
 ></P
 ><A
-NAME="AEN75063"
+NAME="AEN75142"
 ></A
 ><TABLE
 BORDER="1"
@@ -1451,7 +1454,7 @@ CLASS="COMMAND"
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN75126"
+NAME="AEN75205"
 ></A
 ><H3
 >CSV Format</H3
@@ -1652,7 +1655,7 @@ CLASS="COMMAND"
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN75172"
+NAME="AEN75251"
 ></A
 ><H3
 >Binary Format</H3
@@ -1708,7 +1711,7 @@ CLASS="PRODUCTNAME"
 ><DIV
 CLASS="REFSECT3"
 ><A
-NAME="AEN75185"
+NAME="AEN75264"
 ></A
 ><H4
 >File Header</H4
@@ -1801,7 +1804,7 @@ is left for a later release.
 ><DIV
 CLASS="REFSECT3"
 ><A
-NAME="AEN75211"
+NAME="AEN75290"
 ></A
 ><H4
 >Tuples</H4
@@ -1853,7 +1856,7 @@ OIDs to be shown as null if that ever proves desirable.
 ><DIV
 CLASS="REFSECT3"
 ><A
-NAME="AEN75222"
+NAME="AEN75301"
 ></A
 ><H4
 >File Trailer</H4
@@ -1872,7 +1875,7 @@ NAME="AEN75222"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN75226"
+NAME="AEN75305"
 ></A
 ><H2
 >Examples</H2
@@ -1963,7 +1966,7 @@ CLASS="PROGRAMLISTING"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN75247"
+NAME="AEN75326"
 ></A
 ><H2
 >Compatibility</H2
@@ -2005,7 +2008,7 @@ CLASS="REPLACEABLE"
           [ DELIMITER [ AS ] '<TT
 CLASS="REPLACEABLE"
 ><I
->delimiter</I
+>delimiter_character</I
 ></TT
 >' ]
           [ NULL [ AS ] '<TT
@@ -2018,13 +2021,13 @@ CLASS="REPLACEABLE"
                 [ QUOTE [ AS ] '<TT
 CLASS="REPLACEABLE"
 ><I
->quote</I
+>quote_character</I
 ></TT
 >' ]
                 [ ESCAPE [ AS ] '<TT
 CLASS="REPLACEABLE"
 ><I
->escape</I
+>escape_character</I
 ></TT
 >' ]
                 [ FORCE NOT NULL <TT
@@ -2062,7 +2065,7 @@ CLASS="REPLACEABLE"
           [ DELIMITER [ AS ] '<TT
 CLASS="REPLACEABLE"
 ><I
->delimiter</I
+>delimiter_character</I
 ></TT
 >' ]
           [ NULL [ AS ] '<TT
@@ -2075,13 +2078,13 @@ CLASS="REPLACEABLE"
                 [ QUOTE [ AS ] '<TT
 CLASS="REPLACEABLE"
 ><I
->quote</I
+>quote_character</I
 ></TT
 >' ]
                 [ ESCAPE [ AS ] '<TT
 CLASS="REPLACEABLE"
 ><I
->escape</I
+>escape_character</I
 ></TT
 >' ]
                 [ FORCE QUOTE { <TT
@@ -2129,13 +2132,13 @@ CLASS="REPLACEABLE"
     [ [USING] DELIMITERS '<TT
 CLASS="REPLACEABLE"
 ><I
->delimiter</I
+>delimiter_character</I
 ></TT
 >' ]
     [ WITH NULL AS '<TT
 CLASS="REPLACEABLE"
 ><I
->null string</I
+>null_string</I
 ></TT
 >' ]
 
@@ -2154,13 +2157,13 @@ CLASS="REPLACEABLE"
     [ [USING] DELIMITERS '<TT
 CLASS="REPLACEABLE"
 ><I
->delimiter</I
+>delimiter_character</I
 ></TT
 >' ]
     [ WITH NULL AS '<TT
 CLASS="REPLACEABLE"
 ><I
->null string</I
+>null_string</I
 ></TT
 >' ]</PRE
 ><P></P

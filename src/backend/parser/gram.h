@@ -1,8 +1,9 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 3.3.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2019 Free Software Foundation,
+   Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -29,6 +30,9 @@
 
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
+
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
 
 #ifndef YY_BASE_YY_GRAM_H_INCLUDED
 # define YY_BASE_YY_GRAM_H_INCLUDED
@@ -489,7 +493,7 @@ extern int base_yydebug;
 
 union YYSTYPE
 {
-#line 191 "gram.y" /* yacc.c:1909  */
+#line 191 "gram.y" /* yacc.c:1921  */
 
 	core_YYSTYPE		core_yystype;
 	/* these fields must match core_YYSTYPE: */
@@ -529,7 +533,7 @@ union YYSTYPE
 	InsertStmt			*istmt;
 	VariableSetStmt		*vsetstmt;
 
-#line 533 "gram.h" /* yacc.c:1909  */
+#line 537 "gram.h" /* yacc.c:1921  */
 };
 
 typedef union YYSTYPE YYSTYPE;

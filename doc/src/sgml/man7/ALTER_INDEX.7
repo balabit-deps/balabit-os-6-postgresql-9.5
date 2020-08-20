@@ -3,11 +3,11 @@
 .\"    Author: The PostgreSQL Global Development Group
 .\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
 .\"      Date: 2020
-.\"    Manual: PostgreSQL 9.5.21 Documentation
-.\"    Source: PostgreSQL 9.5.21
+.\"    Manual: PostgreSQL 9.5.23 Documentation
+.\"    Source: PostgreSQL 9.5.23
 .\"  Language: English
 .\"
-.TH "ALTER INDEX" "7" "2020" "PostgreSQL 9.5.21" "PostgreSQL 9.5.21 Documentation"
+.TH "ALTER INDEX" "7" "2020" "PostgreSQL 9.5.23" "PostgreSQL 9.5.23 Documentation"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -34,7 +34,7 @@ ALTER_INDEX \- change the definition of an index
 .nf
 ALTER INDEX [ IF EXISTS ] \fIname\fR RENAME TO \fInew_name\fR
 ALTER INDEX [ IF EXISTS ] \fIname\fR SET TABLESPACE \fItablespace_name\fR
-ALTER INDEX [ IF EXISTS ] \fIname\fR SET ( \fIstorage_parameter\fR = \fIvalue\fR [, \&.\&.\&. ] )
+ALTER INDEX [ IF EXISTS ] \fIname\fR SET ( \fIstorage_parameter\fR [= \fIvalue\fR] [, \&.\&.\&. ] )
 ALTER INDEX [ IF EXISTS ] \fIname\fR RESET ( \fIstorage_parameter\fR [, \&.\&.\&. ] )
 ALTER INDEX ALL IN TABLESPACE \fIname\fR [ OWNED BY \fIrole_name\fR [, \&.\&.\&. ] ]
     SET TABLESPACE \fInew_tablespace\fR [ NOWAIT ]
@@ -68,7 +68,7 @@ invocations instead if desired\&. See also
 CREATE TABLESPACE (\fBCREATE_TABLESPACE\fR(7))\&.
 .RE
 .PP
-SET ( \fIstorage_parameter\fR = \fIvalue\fR [, \&.\&.\&. ] )
+SET ( \fIstorage_parameter\fR [= \fIvalue\fR] [, \&.\&.\&. ] )
 .RS 4
 This form changes one or more index\-method\-specific storage parameters for the index\&. See
 CREATE INDEX (\fBCREATE_INDEX\fR(7))

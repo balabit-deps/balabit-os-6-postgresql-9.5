@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.21 Documentation"
+TITLE="PostgreSQL 9.5.23 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="Additional Supplied Modules"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2020-02-10T22:35:27"></HEAD
+CONTENT="2020-08-10T21:35:47"></HEAD
 ><BODY
 CLASS="SECT1"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.21 Documentation</A
+>PostgreSQL 9.5.23 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -113,7 +113,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN133722"
+NAME="AEN134225"
 >F.15.1. <TT
 CLASS="TYPE"
 >hstore</TT
@@ -254,7 +254,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN133753"
+NAME="AEN134256"
 >F.15.2. <TT
 CLASS="TYPE"
 >hstore</TT
@@ -1399,7 +1399,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN134225"
+NAME="AEN134728"
 >F.15.3. Indexes</A
 ></H2
 ><P
@@ -1479,7 +1479,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN134247"
+NAME="AEN134750"
 >F.15.4. Examples</A
 ></H2
 ><P
@@ -1559,7 +1559,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN134264"
+NAME="AEN134767"
 >F.15.5. Statistics</A
 ></H2
 ><P
@@ -1613,7 +1613,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN134274"
+NAME="AEN134777"
 >F.15.6. Compatibility</A
 ></H2
 ><P
@@ -1657,7 +1657,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN134284"
+NAME="AEN134787"
 >F.15.7. Transforms</A
 ></H2
 ><P
@@ -1701,13 +1701,44 @@ CLASS="TYPE"
 > values are mapped to
    Python dictionaries.
   </P
+><DIV
+CLASS="CAUTION"
+><P
+></P
+><TABLE
+CLASS="CAUTION"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Caution</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>    It is strongly recommended that the transform extensions be installed in
+    the same schema as <TT
+CLASS="FILENAME"
+>hstore</TT
+>.  Otherwise there are
+    installation-time security hazards if a transform extension's schema
+    contains objects defined by a hostile user.
+   </P
+></TD
+></TR
+></TABLE
+></DIV
 ></DIV
 ><DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN134296"
+NAME="AEN134802"
 >F.15.8. Authors</A
 ></H2
 ><P

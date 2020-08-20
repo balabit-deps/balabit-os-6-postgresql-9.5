@@ -15,6 +15,7 @@ our @EXPORT = qw(
   psql
   slurp_dir
   slurp_file
+  append_to_file
   system_or_bail
   system_log
   run_log
@@ -129,6 +130,33 @@ sub tempdir_short
 	return File::Temp::tempdir(CLEANUP => 1);
 }
 
+# Translate a Perl file name to a host file name.  Currently, this is a no-op
+# except for the case of Perl=msys and host=mingw32.  The subject need not
+# exist, but its parent directory must exist.
+sub perl2host
+{
+	my ($subject) = @_;
+	return $subject unless $Config{osname} eq 'msys';
+	my $here = cwd;
+	my $leaf;
+	if (chdir $subject)
+	{
+		$leaf = '';
+	}
+	else
+	{
+		$leaf = '/' . basename $subject;
+		my $parent = dirname $subject;
+		chdir $parent or die "could not chdir \"$parent\": $!";
+	}
+
+	# this odd way of calling 'pwd -W' is the only way that seems to work.
+	my $dir = qx{sh -c "pwd -W"};
+	chomp $dir;
+	chdir $here;
+	return $dir . $leaf;
+}
+
 # Initialize a new cluster for testing.
 #
 # The PGHOST environment variable is set to connect to the new cluster.
@@ -231,8 +259,8 @@ sub psql
 	my ($stdout, $stderr);
 	print("# Running SQL command: $sql\n");
 	run [ 'psql', '-X', '-A', '-t', '-q', '-d', $dbname, '-f', '-' ], '<', \$sql, '>', \$stdout, '2>', \$stderr or die;
+	$stdout =~ s/\r\n/\n/g if $Config{osname} eq 'msys';
 	chomp $stdout;
-	$stdout =~ s/\r//g if $Config{osname} eq 'msys';
 	return $stdout;
 }
 
@@ -253,8 +281,17 @@ sub slurp_file
 	  or die "could not read \"$filename\": $!";
 	my $contents = <$in>;
 	close $in;
-	$contents =~ s/\r//g if $Config{osname} eq 'msys';
+	$contents =~ s/\r\n/\n/g if $Config{osname} eq 'msys';
 	return $contents;
+}
+
+sub append_to_file
+{
+	my ($filename, $str) = @_;
+	open my $fh, ">>", $filename
+	  or die "could not write \"$filename\": $!";
+	print $fh $str;
+	close $fh;
 }
 
 sub system_or_bail

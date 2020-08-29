@@ -539,7 +539,7 @@ sql_help_ALTER_INDEX(PQExpBuffer buf)
 	appendPQExpBuffer(buf,
 					  "ALTER INDEX [ IF EXISTS ] %s RENAME TO %s\n"
 					  "ALTER INDEX [ IF EXISTS ] %s SET TABLESPACE %s\n"
-					  "ALTER INDEX [ IF EXISTS ] %s SET ( %s = %s [, ... ] )\n"
+					  "ALTER INDEX [ IF EXISTS ] %s SET ( %s [= %s] [, ... ] )\n"
 					  "ALTER INDEX [ IF EXISTS ] %s RESET ( %s [, ... ] )\n"
 					  "ALTER INDEX ALL IN TABLESPACE %s [ OWNED BY %s [, ... ] ]\n"
 					  "    SET TABLESPACE %s [ NOWAIT ]",
@@ -601,7 +601,7 @@ sql_help_ALTER_MATERIALIZED_VIEW(PQExpBuffer buf)
 					  "    ALTER [ COLUMN ] %s SET STORAGE { PLAIN | EXTERNAL | EXTENDED | MAIN }\n"
 					  "    CLUSTER ON %s\n"
 					  "    SET WITHOUT CLUSTER\n"
-					  "    SET ( %s = %s [, ... ] )\n"
+					  "    SET ( %s [= %s] [, ... ] )\n"
 					  "    RESET ( %s [, ... ] )\n"
 					  "    OWNER TO { %s | CURRENT_USER | SESSION_USER }",
 					  _("name"),
@@ -941,7 +941,7 @@ sql_help_ALTER_TABLE(PQExpBuffer buf)
 					  "    SET WITHOUT OIDS\n"
 					  "    SET TABLESPACE %s\n"
 					  "    SET { LOGGED | UNLOGGED }\n"
-					  "    SET ( %s = %s [, ... ] )\n"
+					  "    SET ( %s [= %s] [, ... ] )\n"
 					  "    RESET ( %s [, ... ] )\n"
 					  "    INHERIT %s\n"
 					  "    NO INHERIT %s\n"
@@ -1849,6 +1849,9 @@ sql_help_CREATE_GROUP(PQExpBuffer buf)
 					  "    | CREATEUSER | NOCREATEUSER\n"
 					  "    | INHERIT | NOINHERIT\n"
 					  "    | LOGIN | NOLOGIN\n"
+					  "    | REPLICATION | NOREPLICATION\n"
+					  "    | BYPASSRLS | NOBYPASSRLS\n"
+					  "    | CONNECTION LIMIT %s\n"
 					  "    | [ ENCRYPTED | UNENCRYPTED ] PASSWORD '%s'\n"
 					  "    | VALID UNTIL '%s'\n"
 					  "    | IN ROLE %s [, ...]\n"
@@ -1860,6 +1863,7 @@ sql_help_CREATE_GROUP(PQExpBuffer buf)
 					  _("name"),
 					  _("option"),
 					  _("where option can be:"),
+					  _("connlimit"),
 					  _("password"),
 					  _("timestamp"),
 					  _("role_name"),
@@ -1876,7 +1880,7 @@ sql_help_CREATE_INDEX(PQExpBuffer buf)
 	appendPQExpBuffer(buf,
 					  "CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] %s ] ON %s [ USING %s ]\n"
 					  "    ( { %s | ( %s ) } [ COLLATE %s ] [ %s ] [ ASC | DESC ] [ NULLS { FIRST | LAST } ] [, ...] )\n"
-					  "    [ WITH ( %s = %s [, ... ] ) ]\n"
+					  "    [ WITH ( %s [= %s] [, ... ] ) ]\n"
 					  "    [ TABLESPACE %s ]\n"
 					  "    [ WHERE %s ]",
 					  _("name"),
@@ -2537,13 +2541,13 @@ sql_help_DELETE(PQExpBuffer buf)
 	appendPQExpBuffer(buf,
 					  "[ WITH [ RECURSIVE ] %s [, ...] ]\n"
 					  "DELETE FROM [ ONLY ] %s [ * ] [ [ AS ] %s ]\n"
-					  "    [ USING %s ]\n"
+					  "    [ USING %s [, ...] ]\n"
 					  "    [ WHERE %s | WHERE CURRENT OF %s ]\n"
 					  "    [ RETURNING * | %s [ [ AS ] %s ] [, ...] ]",
 					  _("with_query"),
 					  _("table_name"),
 					  _("alias"),
-					  _("using_list"),
+					  _("from_item"),
 					  _("condition"),
 					  _("cursor_name"),
 					  _("output_expression"),
@@ -3029,14 +3033,16 @@ sql_help_GRANT(PQExpBuffer buf)
 					  "    ON TYPE %s [, ...]\n"
 					  "    TO %s [, ...] [ WITH GRANT OPTION ]\n"
 					  "\n"
+					  "GRANT %s [, ...] TO %s [, ...]\n"
+					  "    [ WITH ADMIN OPTION ]\n"
+					  "    [ GRANTED BY %s ]\n"
+					  "\n"
 					  "%s\n"
 					  "\n"
 					  "    [ GROUP ] %s\n"
 					  "  | PUBLIC\n"
 					  "  | CURRENT_USER\n"
-					  "  | SESSION_USER\n"
-					  "\n"
-					  "GRANT %s [, ...] TO %s [, ...] [ WITH ADMIN OPTION ]",
+					  "  | SESSION_USER",
 					  _("table_name"),
 					  _("schema_name"),
 					  _("role_specification"),
@@ -3071,9 +3077,10 @@ sql_help_GRANT(PQExpBuffer buf)
 					  _("role_specification"),
 					  _("type_name"),
 					  _("role_specification"),
+					  _("role_name"),
+					  _("role_specification"),
+					  _("role_specification"),
 					  _("where role_specification can be:"),
-					  _("role_name"),
-					  _("role_name"),
 					  _("role_name"));
 }
 
@@ -3287,14 +3294,14 @@ sql_help_REVOKE(PQExpBuffer buf)
 					  "    [, ...] | ALL [ PRIVILEGES ] }\n"
 					  "    ON { [ TABLE ] %s [, ...]\n"
 					  "         | ALL TABLES IN SCHEMA %s [, ...] }\n"
-					  "    FROM { [ GROUP ] %s | PUBLIC } [, ...]\n"
+					  "    FROM %s [, ...]\n"
 					  "    [ CASCADE | RESTRICT ]\n"
 					  "\n"
 					  "REVOKE [ GRANT OPTION FOR ]\n"
 					  "    { { SELECT | INSERT | UPDATE | REFERENCES } ( %s [, ...] )\n"
 					  "    [, ...] | ALL [ PRIVILEGES ] ( %s [, ...] ) }\n"
 					  "    ON [ TABLE ] %s [, ...]\n"
-					  "    FROM { [ GROUP ] %s | PUBLIC } [, ...]\n"
+					  "    FROM %s [, ...]\n"
 					  "    [ CASCADE | RESTRICT ]\n"
 					  "\n"
 					  "REVOKE [ GRANT OPTION FOR ]\n"
@@ -3302,108 +3309,119 @@ sql_help_REVOKE(PQExpBuffer buf)
 					  "    [, ...] | ALL [ PRIVILEGES ] }\n"
 					  "    ON { SEQUENCE %s [, ...]\n"
 					  "         | ALL SEQUENCES IN SCHEMA %s [, ...] }\n"
-					  "    FROM { [ GROUP ] %s | PUBLIC } [, ...]\n"
+					  "    FROM %s [, ...]\n"
 					  "    [ CASCADE | RESTRICT ]\n"
 					  "\n"
 					  "REVOKE [ GRANT OPTION FOR ]\n"
 					  "    { { CREATE | CONNECT | TEMPORARY | TEMP } [, ...] | ALL [ PRIVILEGES ] }\n"
 					  "    ON DATABASE %s [, ...]\n"
-					  "    FROM { [ GROUP ] %s | PUBLIC } [, ...]\n"
+					  "    FROM %s [, ...]\n"
 					  "    [ CASCADE | RESTRICT ]\n"
 					  "\n"
 					  "REVOKE [ GRANT OPTION FOR ]\n"
 					  "    { USAGE | ALL [ PRIVILEGES ] }\n"
 					  "    ON DOMAIN %s [, ...]\n"
-					  "    FROM { [ GROUP ] %s | PUBLIC } [, ...]\n"
+					  "    FROM %s [, ...]\n"
 					  "    [ CASCADE | RESTRICT ]\n"
 					  "\n"
 					  "REVOKE [ GRANT OPTION FOR ]\n"
 					  "    { USAGE | ALL [ PRIVILEGES ] }\n"
 					  "    ON FOREIGN DATA WRAPPER %s [, ...]\n"
-					  "    FROM { [ GROUP ] %s | PUBLIC } [, ...]\n"
+					  "    FROM %s [, ...]\n"
 					  "    [ CASCADE | RESTRICT ]\n"
 					  "\n"
 					  "REVOKE [ GRANT OPTION FOR ]\n"
 					  "    { USAGE | ALL [ PRIVILEGES ] }\n"
 					  "    ON FOREIGN SERVER %s [, ...]\n"
-					  "    FROM { [ GROUP ] %s | PUBLIC } [, ...]\n"
+					  "    FROM %s [, ...]\n"
 					  "    [ CASCADE | RESTRICT ]\n"
 					  "\n"
 					  "REVOKE [ GRANT OPTION FOR ]\n"
 					  "    { EXECUTE | ALL [ PRIVILEGES ] }\n"
 					  "    ON { FUNCTION %s ( [ [ %s ] [ %s ] %s [, ...] ] ) [, ...]\n"
 					  "         | ALL FUNCTIONS IN SCHEMA %s [, ...] }\n"
-					  "    FROM { [ GROUP ] %s | PUBLIC } [, ...]\n"
+					  "    FROM %s [, ...]\n"
 					  "    [ CASCADE | RESTRICT ]\n"
 					  "\n"
 					  "REVOKE [ GRANT OPTION FOR ]\n"
 					  "    { USAGE | ALL [ PRIVILEGES ] }\n"
 					  "    ON LANGUAGE %s [, ...]\n"
-					  "    FROM { [ GROUP ] %s | PUBLIC } [, ...]\n"
+					  "    FROM %s [, ...]\n"
 					  "    [ CASCADE | RESTRICT ]\n"
 					  "\n"
 					  "REVOKE [ GRANT OPTION FOR ]\n"
 					  "    { { SELECT | UPDATE } [, ...] | ALL [ PRIVILEGES ] }\n"
 					  "    ON LARGE OBJECT %s [, ...]\n"
-					  "    FROM { [ GROUP ] %s | PUBLIC } [, ...]\n"
+					  "    FROM %s [, ...]\n"
 					  "    [ CASCADE | RESTRICT ]\n"
 					  "\n"
 					  "REVOKE [ GRANT OPTION FOR ]\n"
 					  "    { { CREATE | USAGE } [, ...] | ALL [ PRIVILEGES ] }\n"
 					  "    ON SCHEMA %s [, ...]\n"
-					  "    FROM { [ GROUP ] %s | PUBLIC } [, ...]\n"
+					  "    FROM %s [, ...]\n"
 					  "    [ CASCADE | RESTRICT ]\n"
 					  "\n"
 					  "REVOKE [ GRANT OPTION FOR ]\n"
 					  "    { CREATE | ALL [ PRIVILEGES ] }\n"
 					  "    ON TABLESPACE %s [, ...]\n"
-					  "    FROM { [ GROUP ] %s | PUBLIC } [, ...]\n"
+					  "    FROM %s [, ...]\n"
 					  "    [ CASCADE | RESTRICT ]\n"
 					  "\n"
 					  "REVOKE [ GRANT OPTION FOR ]\n"
 					  "    { USAGE | ALL [ PRIVILEGES ] }\n"
 					  "    ON TYPE %s [, ...]\n"
-					  "    FROM { [ GROUP ] %s | PUBLIC } [, ...]\n"
+					  "    FROM %s [, ...]\n"
 					  "    [ CASCADE | RESTRICT ]\n"
 					  "\n"
 					  "REVOKE [ ADMIN OPTION FOR ]\n"
 					  "    %s [, ...] FROM %s [, ...]\n"
-					  "    [ CASCADE | RESTRICT ]",
+					  "    [ GRANTED BY %s ]\n"
+					  "    [ CASCADE | RESTRICT ]\n"
+					  "\n"
+					  "%s\n"
+					  "\n"
+					  "    [ GROUP ] %s\n"
+					  "  | PUBLIC\n"
+					  "  | CURRENT_USER\n"
+					  "  | SESSION_USER",
 					  _("table_name"),
 					  _("schema_name"),
-					  _("role_name"),
+					  _("role_specification"),
 					  _("column_name"),
 					  _("column_name"),
 					  _("table_name"),
-					  _("role_name"),
+					  _("role_specification"),
 					  _("sequence_name"),
 					  _("schema_name"),
-					  _("role_name"),
+					  _("role_specification"),
 					  _("database_name"),
-					  _("role_name"),
+					  _("role_specification"),
 					  _("domain_name"),
-					  _("role_name"),
+					  _("role_specification"),
 					  _("fdw_name"),
-					  _("role_name"),
+					  _("role_specification"),
 					  _("server_name"),
-					  _("role_name"),
+					  _("role_specification"),
 					  _("function_name"),
 					  _("argmode"),
 					  _("arg_name"),
 					  _("arg_type"),
 					  _("schema_name"),
-					  _("role_name"),
+					  _("role_specification"),
 					  _("lang_name"),
-					  _("role_name"),
+					  _("role_specification"),
 					  _("loid"),
-					  _("role_name"),
+					  _("role_specification"),
 					  _("schema_name"),
-					  _("role_name"),
+					  _("role_specification"),
 					  _("tablespace_name"),
-					  _("role_name"),
+					  _("role_specification"),
 					  _("type_name"),
+					  _("role_specification"),
 					  _("role_name"),
-					  _("role_name"),
+					  _("role_specification"),
+					  _("role_specification"),
+					  _("where role_specification can be:"),
 					  _("role_name"));
 }
 
@@ -3887,7 +3905,7 @@ sql_help_UPDATE(PQExpBuffer buf)
 					  "          ( %s [, ...] ) = ( { %s | DEFAULT } [, ...] ) |\n"
 					  "          ( %s [, ...] ) = ( %s )\n"
 					  "        } [, ...]\n"
-					  "    [ FROM %s ]\n"
+					  "    [ FROM %s [, ...] ]\n"
 					  "    [ WHERE %s | WHERE CURRENT OF %s ]\n"
 					  "    [ RETURNING * | %s [ [ AS ] %s ] [, ...] ]",
 					  _("with_query"),
@@ -3899,7 +3917,7 @@ sql_help_UPDATE(PQExpBuffer buf)
 					  _("expression"),
 					  _("column_name"),
 					  _("sub-SELECT"),
-					  _("from_list"),
+					  _("from_item"),
 					  _("condition"),
 					  _("cursor_name"),
 					  _("output_expression"),

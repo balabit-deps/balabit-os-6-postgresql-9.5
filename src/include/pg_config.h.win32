@@ -373,6 +373,9 @@
 /* Define to 1 if you have the <string.h> header file. */
 #define HAVE_STRING_H 1
 
+/* Define to 1 if you have the `strsignal' function. */
+/* #undef HAVE_STRSIGNAL */
+
 /* Define to 1 if you have the `strtoll' function. */
 #ifdef HAVE_LONG_LONG_INT_64
 #define HAVE_STRTOLL 1
@@ -588,10 +591,10 @@
 #define PACKAGE_NAME "PostgreSQL"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "PostgreSQL 9.5.21"
+#define PACKAGE_STRING "PostgreSQL 9.5.23"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "9.5.21"
+#define PACKAGE_VERSION "9.5.23"
 
 /* Define to the name of a signed 128-bit integer type. */
 #undef PG_INT128_TYPE
@@ -600,10 +603,10 @@
 #define PG_INT64_TYPE long long int
 
 /* PostgreSQL version as a string */
-#define PG_VERSION "9.5.21"
+#define PG_VERSION "9.5.23"
 
 /* PostgreSQL version as a number */
-#define PG_VERSION_NUM 90521
+#define PG_VERSION_NUM 90523
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "postgresql"

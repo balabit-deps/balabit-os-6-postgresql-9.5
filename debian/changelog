@@ -1,3 +1,9 @@
+postgresql-9.5 (9.5.23-0ubuntu0.16.04.1bb1) xenial; urgency=medium
+
+  * Balabit patched version
+
+ -- Balabit Platform Team <devnull@dev.null>  Sat, 29 Aug 2020 04:29:55 +0200
+
 postgresql-9.5 (9.5.23-0ubuntu0.16.04.1) xenial-security; urgency=medium
 
   * New upstream release (LP: #1892335).

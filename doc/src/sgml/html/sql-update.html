@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.21 Documentation"
+TITLE="PostgreSQL 9.5.23 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="SQL Commands"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2020-02-10T22:35:27"></HEAD
+CONTENT="2020-08-10T21:35:47"></HEAD
 ><BODY
 CLASS="REFENTRY"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.21 Documentation</A
+>PostgreSQL 9.5.23 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -95,7 +95,7 @@ NAME="SQL-UPDATE"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN89544"
+NAME="AEN89587"
 ></A
 ><H2
 >Name</H2
@@ -103,7 +103,7 @@ NAME="AEN89544"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN89547"
+NAME="AEN89590"
 ></A
 ><H2
 >Synopsis</H2
@@ -163,9 +163,9 @@ CLASS="REPLACEABLE"
     [ FROM <TT
 CLASS="REPLACEABLE"
 ><I
->from_list</I
+>from_item</I
 ></TT
-> ]
+> [, ...] ]
     [ WHERE <TT
 CLASS="REPLACEABLE"
 ><I
@@ -192,7 +192,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN89563"
+NAME="AEN89606"
 ></A
 ><H2
 >Description</H2
@@ -270,7 +270,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN89581"
+NAME="AEN89624"
 ></A
 ><H2
 >Parameters</H2
@@ -433,18 +433,17 @@ CLASS="LITERAL"
 ><TT
 CLASS="REPLACEABLE"
 ><I
->from_list</I
+>from_item</I
 ></TT
 ></DT
 ><DD
 ><P
->      A list of table expressions, allowing columns from other tables
-      to appear in the <TT
+>      A table expression allowing columns from other tables to appear in
+      the <TT
 CLASS="LITERAL"
 >WHERE</TT
-> condition and the update
-      expressions. This is similar to the list of tables that can be
-      specified in the <A
+> condition and update expressions. This
+      uses the same syntax as the <A
 HREF="sql-select.html#SQL-FROM"
 ><I
 ><I
@@ -454,18 +453,19 @@ HREF="sql-select.html#SQL-FROM"
 > of a <TT
 CLASS="COMMAND"
 >SELECT</TT
->
-      statement.  Note that the target table must not appear in the
-      <TT
+> statement;
+      for example, an alias for the table name can be specified.  Do not
+      repeat the target table as a <TT
 CLASS="REPLACEABLE"
 ><I
->from_list</I
+>from_item</I
 ></TT
->, unless you intend a self-join (in which
-      case it must appear with an alias in the <TT
+>
+      unless you intend a self-join (in which case it must appear with
+      an alias in the <TT
 CLASS="REPLACEABLE"
 ><I
->from_list</I
+>from_item</I
 ></TT
 >).
      </P
@@ -573,7 +573,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN89674"
+NAME="AEN89717"
 ></A
 ><H2
 >Outputs</H2
@@ -641,7 +641,7 @@ CLASS="LITERAL"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN89689"
+NAME="AEN89732"
 ></A
 ><H2
 >Notes</H2
@@ -654,9 +654,9 @@ CLASS="LITERAL"
    <TT
 CLASS="REPLACEABLE"
 ><I
->from_list</I
+>from_item</I
 ></TT
->, and each output row of the join
+> list, and each output row of the join
    represents an update operation for the target table.  When using
    <TT
 CLASS="LITERAL"
@@ -677,7 +677,7 @@ CLASS="LITERAL"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN89696"
+NAME="AEN89739"
 ></A
 ><H2
 >Examples</H2
@@ -846,7 +846,7 @@ CLASS="PROGRAMLISTING"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN89734"
+NAME="AEN89777"
 ></A
 ><H2
 >Compatibility</H2

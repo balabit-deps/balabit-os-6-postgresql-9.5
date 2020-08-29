@@ -486,7 +486,7 @@ static const struct _helpStruct QL_HELP[] = {
     { "CREATE GROUP",
       N_("define a new database role"),
       sql_help_CREATE_GROUP,
-      17 },
+      20 },
 
     { "CREATE INDEX",
       N_("define a new index"),
@@ -846,7 +846,7 @@ static const struct _helpStruct QL_HELP[] = {
     { "GRANT",
       N_("define access privileges"),
       sql_help_GRANT,
-      65 },
+      67 },
 
     { "IMPORT FOREIGN SCHEMA",
       N_("import table definitions from a foreign server"),
@@ -921,7 +921,7 @@ static const struct _helpStruct QL_HELP[] = {
     { "REVOKE",
       N_("remove access privileges"),
       sql_help_REVOKE,
-      86 },
+      94 },
 
     { "ROLLBACK",
       N_("abort the current transaction"),

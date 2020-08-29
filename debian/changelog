@@ -1,3 +1,28 @@
+postgresql-9.5 (9.5.23-0ubuntu0.16.04.1) xenial-security; urgency=medium
+
+  * New upstream release (LP: #1892335).
+    - Make contrib modules' installation scripts more secure (Tom Lane)
+
+      Attacks similar to those described in CVE-2018-1058 could be carried out
+      against an extension installation script, if the attacker can create
+      objects in either the extension's target schema or the schema of some
+      prerequisite extension.  Since extensions often require superuser
+      privilege to install, this can open a path to obtaining superuser
+      privilege.  To mitigate this risk, be more careful about the search_path
+      used to run an installation script; disable check_function_bodies within
+      the script; and fix catalog-adjustment queries used in some contrib
+      modules to ensure they are secure.  Also provide documentation to help
+      third-party extension authors make their installation scripts secure.
+      This is not a complete solution; extensions that depend on other
+      extensions can still be at risk if installed carelessly.
+      CVE-2020-14350
+
+    - Details about these and many further changes can be found at:
+      https://www.postgresql.org/docs/9.5/static/release-9-5-22.html
+      https://www.postgresql.org/docs/9.5/static/release-9-5-23.html
+
+ -- Christian Ehrhardt <christian.ehrhardt@canonical.com>  Thu, 20 Aug 2020 11:29:10 +0200
+
 postgresql-9.5 (9.5.21-0ubuntu0.16.04.1bb1) xenial; urgency=medium
 
   * Balabit patched version

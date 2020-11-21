@@ -949,6 +949,7 @@ ProcessUtilitySlow(Node *parsetree,
 				{
 					List	   *stmts;
 					ListCell   *l;
+					RangeVar   *table_rv = NULL;
 
 					/* Run parse analysis ... */
 					stmts = transformCreateStmt((CreateStmt *) parsetree,
@@ -961,11 +962,15 @@ ProcessUtilitySlow(Node *parsetree,
 
 						if (IsA(stmt, CreateStmt))
 						{
+							CreateStmt *cstmt = (CreateStmt *) stmt;
 							Datum		toast_options;
 							static char *validnsps[] = HEAP_RELOPT_NAMESPACES;
 
+							/* Remember transformed RangeVar for LIKE */
+							table_rv = cstmt->relation;
+
 							/* Create the table itself */
-							address = DefineRelation((CreateStmt *) stmt,
+							address = DefineRelation(cstmt,
 													 RELKIND_RELATION,
 													 InvalidOid, NULL);
 							EventTriggerCollectSimpleCommand(address,
@@ -983,7 +988,7 @@ ProcessUtilitySlow(Node *parsetree,
 							 * table
 							 */
 							toast_options = transformRelOptions((Datum) 0,
-											  ((CreateStmt *) stmt)->options,
+																cstmt->options,
 																"toast",
 																validnsps,
 																true,
@@ -997,15 +1002,43 @@ ProcessUtilitySlow(Node *parsetree,
 						}
 						else if (IsA(stmt, CreateForeignTableStmt))
 						{
+							CreateForeignTableStmt *cstmt = (CreateForeignTableStmt *) stmt;
+
+							/* Remember transformed RangeVar for LIKE */
+							table_rv = cstmt->base.relation;
+
 							/* Create the table itself */
-							address = DefineRelation((CreateStmt *) stmt,
+							address = DefineRelation(&cstmt->base,
 													 RELKIND_FOREIGN_TABLE,
 													 InvalidOid, NULL);
-							CreateForeignTable((CreateForeignTableStmt *) stmt,
+							CreateForeignTable(cstmt,
 											   address.objectId);
 							EventTriggerCollectSimpleCommand(address,
 															 secondaryObject,
 															 stmt);
+						}
+						else if (IsA(stmt, TableLikeClause))
+						{
+							/*
+							 * Do delayed processing of LIKE options.  This
+							 * will result in additional sub-statements for us
+							 * to process.  We can just tack those onto the
+							 * to-do list.
+							 */
+							TableLikeClause *like = (TableLikeClause *) stmt;
+							List	   *morestmts;
+
+							Assert(table_rv != NULL);
+
+							morestmts = expandTableLikeClause(table_rv, like);
+							stmts = list_concat(stmts, morestmts);
+
+							/*
+							 * We don't need a CCI now, besides which the "l"
+							 * list pointer is now possibly invalid, so just
+							 * skip the CCI test below.
+							 */
+							continue;
 						}
 						else
 						{
@@ -1232,6 +1265,7 @@ ProcessUtilitySlow(Node *parsetree,
 					IndexStmt  *stmt = (IndexStmt *) parsetree;
 					Oid			relid;
 					LOCKMODE	lockmode;
+					bool		is_alter_table;
 
 					if (stmt->concurrent)
 						PreventTransactionChain(isTopLevel,
@@ -1254,6 +1288,17 @@ ProcessUtilitySlow(Node *parsetree,
 												 RangeVarCallbackOwnsRelation,
 												 NULL);
 
+					/*
+					 * If the IndexStmt is already transformed, it must have
+					 * come from generateClonedIndexStmt, which in current
+					 * usage means it came from expandTableLikeClause rather
+					 * than from original parse analysis.  And that means we
+					 * must treat it like ALTER TABLE ADD INDEX, not CREATE.
+					 * (This is a bit grotty, but currently it doesn't seem
+					 * worth adding a separate bool field for the purpose.)
+					 */
+					is_alter_table = stmt->transformed;
+
 					/* Run parse analysis ... */
 					stmt = transformIndexStmt(relid, stmt, queryString);
 
@@ -1263,7 +1308,7 @@ ProcessUtilitySlow(Node *parsetree,
 						DefineIndex(relid,		/* OID of heap relation */
 									stmt,
 									InvalidOid, /* no predefined OID */
-									false,		/* is_alter_table */
+									is_alter_table,
 									true,		/* check_rights */
 									false,		/* skip_build */
 									false);		/* quiet */

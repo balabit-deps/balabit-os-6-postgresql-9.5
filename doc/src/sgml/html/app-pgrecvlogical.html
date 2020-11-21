@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.23 Documentation"
+TITLE="PostgreSQL 9.5.24 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="PostgreSQL Client Applications"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2020-08-10T21:35:47"></HEAD
+CONTENT="2020-11-09T22:46:02"></HEAD
 ><BODY
 CLASS="REFENTRY"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.23 Documentation</A
+>PostgreSQL 9.5.24 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -98,7 +98,7 @@ CLASS="APPLICATION"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN94601"
+NAME="AEN94669"
 ></A
 ><H2
 >Name</H2
@@ -109,7 +109,7 @@ CLASS="PRODUCTNAME"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN94605"
+NAME="AEN94673"
 ></A
 ><H2
 >Synopsis</H2
@@ -127,7 +127,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN94610"
+NAME="AEN94678"
 ></A
 ><H2
 >Description</H2
@@ -153,7 +153,7 @@ HREF="logicaldecoding.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN94617"
+NAME="AEN94685"
 ></A
 ><H2
 >Options</H2
@@ -566,7 +566,7 @@ CLASS="OPTION"
 >-d <TT
 CLASS="REPLACEABLE"
 ><I
->database</I
+>dbname</I
 ></TT
 ></TT
 ><BR><TT
@@ -574,22 +574,25 @@ CLASS="OPTION"
 >--dbname=<TT
 CLASS="REPLACEABLE"
 ><I
->database</I
+>dbname</I
 ></TT
 ></TT
 ></DT
 ><DD
 ><P
->         The database to connect to.  See the description of the actions for
-         what this means in detail.  This can be a <SPAN
-CLASS="APPLICATION"
->libpq</SPAN
-> connection string;
-         see <A
+>         The database to connect to.  See the description
+         of the actions for what this means in detail.
+         The <TT
+CLASS="REPLACEABLE"
+><I
+>dbname</I
+></TT
+> can be a <A
 HREF="libpq-connect.html#LIBPQ-CONNSTRING"
->Section 31.1.1</A
-> for more information.  Defaults
-         to user name.
+>connection string</A
+>.  If so,
+         connection string parameters will override any conflicting
+         command line options.  Defaults to the user name.
         </P
 ></DD
 ><DT
@@ -784,7 +787,7 @@ CLASS="APPLICATION"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN94834"
+NAME="AEN94902"
 ></A
 ><H2
 >Environment</H2
@@ -806,7 +809,7 @@ HREF="libpq-envars.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN94840"
+NAME="AEN94908"
 ></A
 ><H2
 >Examples</H2
@@ -820,7 +823,7 @@ HREF="logicaldecoding-example.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN94844"
+NAME="AEN94912"
 ></A
 ><H2
 >See Also</H2

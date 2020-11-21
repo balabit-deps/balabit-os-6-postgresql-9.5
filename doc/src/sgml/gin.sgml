@@ -630,7 +630,7 @@
        contains the corresponding query keys. Likewise, the function must
        return GIN_FALSE only if the item does not match, whether or not it
        contains the GIN_MAYBE keys. If the result depends on the GIN_MAYBE
-       entries, i.e. the match cannot be confirmed or refuted based on the
+       entries, i.e., the match cannot be confirmed or refuted based on the
        known query keys, the function must return GIN_MAYBE.
       </para>
       <para>
@@ -827,8 +827,8 @@
      if a foreground cleanup does occur, it will take even longer.
     </para>
     <para>
-     <varname>gin_pending_list_limit</> can be overridden for individual
-     GIN indexes by changing storage parameters, and which allows each
+     <varname>gin_pending_list_limit</varname> can be overridden for individual
+     GIN indexes by changing storage parameters, which allows each
      GIN index to have its own cleanup threshold.
      For example, it's possible to increase the threshold only for the GIN
      index which can be updated heavily, and decrease it otherwise.

@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.23 Documentation"
+TITLE="PostgreSQL 9.5.24 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="PostgreSQL Client Applications"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2020-08-10T21:35:47"></HEAD
+CONTENT="2020-11-09T22:46:02"></HEAD
 ><BODY
 CLASS="REFENTRY"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.23 Documentation</A
+>PostgreSQL 9.5.24 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -95,7 +95,7 @@ NAME="APP-PGRESTORE"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN94856"
+NAME="AEN94924"
 ></A
 ><H2
 >Name</H2
@@ -111,7 +111,7 @@ CLASS="APPLICATION"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN94861"
+NAME="AEN94929"
 ></A
 ><H2
 >Synopsis</H2
@@ -346,7 +346,18 @@ CLASS="REPLACEABLE"
 >dbname</I
 ></TT
 > and restore directly
-        into the database.
+        into the database.  The <TT
+CLASS="REPLACEABLE"
+><I
+>dbname</I
+></TT
+> can
+        be a <A
+HREF="libpq-connect.html#LIBPQ-CONNSTRING"
+>connection string</A
+>.
+        If so, connection string parameters will override any conflicting
+        command line options.
        </P
 ></DD
 ><DT
@@ -1035,7 +1046,7 @@ CLASS="OPTION"
 ></DT
 ><DD
 ><P
->        Use conditional commands (i.e. add an <TT
+>        Use conditional commands (i.e., add an <TT
 CLASS="LITERAL"
 >IF EXISTS</TT
 >
@@ -1370,7 +1381,7 @@ CLASS="APPLICATION"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN95294"
+NAME="AEN95364"
 ></A
 ><H2
 >Environment</H2
@@ -1735,7 +1746,7 @@ CLASS="USERINPUT"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN95388"
+NAME="AEN95458"
 ></A
 ><H2
 >See Also</H2

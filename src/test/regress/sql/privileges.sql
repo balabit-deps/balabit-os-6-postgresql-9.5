@@ -216,6 +216,12 @@ SET SESSION AUTHORIZATION regressuser1;
 SELECT * FROM atest3; -- fail
 DELETE FROM atest3; -- ok
 
+BEGIN;
+RESET SESSION AUTHORIZATION;
+ALTER ROLE regressuser1 NOINHERIT;
+SET SESSION AUTHORIZATION regressuser1;
+DELETE FROM atest3;
+ROLLBACK;
 
 -- views
 
@@ -927,7 +933,8 @@ CREATE TABLE testns.acltest1 (x int);
 SELECT has_table_privilege('regressuser1', 'testns.acltest1', 'SELECT'); -- no
 SELECT has_table_privilege('regressuser1', 'testns.acltest1', 'INSERT'); -- no
 
-ALTER DEFAULT PRIVILEGES IN SCHEMA testns GRANT SELECT ON TABLES TO public;
+-- placeholder for test with duplicated schema and role names
+ALTER DEFAULT PRIVILEGES IN SCHEMA testns,testns GRANT SELECT ON TABLES TO public,public;
 
 SELECT has_table_privilege('regressuser1', 'testns.acltest1', 'SELECT'); -- no
 SELECT has_table_privilege('regressuser1', 'testns.acltest1', 'INSERT'); -- no

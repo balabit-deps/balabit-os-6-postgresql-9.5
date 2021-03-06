@@ -9,7 +9,7 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REV="MADE"
 HREF="mailto:pgsql-docs@postgresql.org"><LINK
 REL="HOME"
-TITLE="PostgreSQL 9.5.24 Documentation"
+TITLE="PostgreSQL 9.5.25 Documentation"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="Functions and Operators"
@@ -26,7 +26,7 @@ HREF="stylesheet.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-1"><META
 NAME="creation"
-CONTENT="2020-11-09T22:46:02"></HEAD
+CONTENT="2021-02-08T22:15:06"></HEAD
 ><BODY
 CLASS="SECT1"
 ><DIV
@@ -44,7 +44,7 @@ ALIGN="center"
 VALIGN="bottom"
 ><A
 HREF="index.html"
->PostgreSQL 9.5.24 Documentation</A
+>PostgreSQL 9.5.25 Documentation</A
 ></TH
 ></TR
 ><TR
@@ -121,6 +121,29 @@ HREF="functions-formatting.html"
 HREF="datatype-datetime.html"
 >Section 8.5</A
 >.
+  </P
+><P
+>   In addition, the usual comparison operators shown in
+   <A
+HREF="functions-comparison.html#FUNCTIONS-COMPARISON-TABLE"
+>Table 9-1</A
+> are available for the
+   date/time types.  Dates and timestamps (with or without time zone) are
+   all comparable, while times (with or without time zone) and intervals
+   can only be compared to other values of the same data type.  When
+   comparing a timestamp without time zone to a timestamp with time zone,
+   the former value is assumed to be given in the time zone specified by
+   the <A
+HREF="runtime-config-client.html#GUC-TIMEZONE"
+>TimeZone</A
+> configuration parameter, and is
+   rotated to UTC for comparison to the latter value (which is already
+   in UTC internally).  Similarly, a date value is assumed to represent
+   midnight in the <TT
+CLASS="VARNAME"
+>TimeZone</TT
+> zone when comparing it
+   to a timestamp.
   </P
 ><P
 >   All the functions and operators described below that take <TT
@@ -2214,7 +2237,8 @@ CLASS="LITERAL"
 CLASS="TYPE"
 >timestamp with time zone</TT
 > values, the
-        number of seconds since 1970-01-01 00:00:00 UTC (can be negative);
+        number of seconds since 1970-01-01 00:00:00 UTC (negative for
+        timestamps before that);
         for <TT
 CLASS="TYPE"
 >date</TT
@@ -2222,7 +2246,8 @@ CLASS="TYPE"
 CLASS="TYPE"
 >timestamp</TT
 > values, the
-        number of seconds since 1970-01-01 00:00:00 local time;
+        nominal number of seconds since 1970-01-01 00:00:00,
+        without regard to timezone or daylight-savings rules;
         for <TT
 CLASS="TYPE"
 >interval</TT
@@ -2240,6 +2265,15 @@ CLASS="COMPUTEROUTPUT"
 >982384720.12</SAMP
 >
 
+SELECT EXTRACT(EPOCH FROM TIMESTAMP '2001-02-16 20:38:40.12');
+<I
+CLASS="LINEANNOTATION"
+>Result: </I
+><SAMP
+CLASS="COMPUTEROUTPUT"
+>982355920.12</SAMP
+>
+
 SELECT EXTRACT(EPOCH FROM INTERVAL '5 days 3 hours');
 <I
 CLASS="LINEANNOTATION"
@@ -2249,18 +2283,40 @@ CLASS="COMPUTEROUTPUT"
 >442800</SAMP
 ></PRE
 ><P
->        Here is how you can convert an epoch value back to a time
-        stamp:
+>        You can convert an epoch value back to a <TT
+CLASS="TYPE"
+>timestamp with time zone</TT
+>
+        with <CODE
+CLASS="FUNCTION"
+>to_timestamp</CODE
+>:
        </P
 ><PRE
 CLASS="SCREEN"
->SELECT TIMESTAMP WITH TIME ZONE 'epoch' + 982384720.12 * INTERVAL '1 second';</PRE
+>SELECT to_timestamp(982384720.12);
+<I
+CLASS="LINEANNOTATION"
+>Result: </I
+><SAMP
+CLASS="COMPUTEROUTPUT"
+>2001-02-17 04:38:40.12+00</SAMP
+></PRE
 ><P
->        (The <CODE
+>        Beware that applying <CODE
 CLASS="FUNCTION"
 >to_timestamp</CODE
-> function encapsulates the above
-        conversion.)
+> to an epoch
+        extracted from a <TT
+CLASS="TYPE"
+>date</TT
+> or <TT
+CLASS="TYPE"
+>timestamp</TT
+> value
+        could produce a misleading result: the result will effectively
+        assume that the original value had been given in UTC, which might
+        not be the case.
        </P
 ></DD
 ><DT
@@ -2532,8 +2588,8 @@ CLASS="LITERAL"
 ><P
 >        The seconds field, including fractional parts (0 -
         59<A
-NAME="AEN15321"
-HREF="#FTN.AEN15321"
+NAME="AEN15331"
+HREF="#FTN.AEN15331"
 ><SPAN
 CLASS="footnote"
 >[1]</SPAN
@@ -3672,8 +3728,8 @@ ALIGN="LEFT"
 VALIGN="TOP"
 WIDTH="5%"
 ><A
-NAME="FTN.AEN15321"
-HREF="functions-datetime.html#AEN15321"
+NAME="FTN.AEN15331"
+HREF="functions-datetime.html#AEN15331"
 ><SPAN
 CLASS="footnote"
 >[1]</SPAN

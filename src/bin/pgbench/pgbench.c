@@ -686,7 +686,7 @@ doConnect(void)
 	if (PQstatus(conn) == CONNECTION_BAD)
 	{
 		fprintf(stderr, "connection to database \"%s\" failed:\n%s",
-				dbName, PQerrorMessage(conn));
+				PQdb(conn), PQerrorMessage(conn));
 		PQfinish(conn);
 		return NULL;
 	}
@@ -3309,13 +3309,6 @@ main(int argc, char **argv)
 	con = doConnect();
 	if (con == NULL)
 		exit(1);
-
-	if (PQstatus(con) == CONNECTION_BAD)
-	{
-		fprintf(stderr, "connection to database \"%s\" failed\n", dbName);
-		fprintf(stderr, "%s", PQerrorMessage(con));
-		exit(1);
-	}
 
 	if (ttype != 3)
 	{
